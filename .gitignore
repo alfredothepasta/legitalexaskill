@@ -1,0 +1,7 @@
+/.gradle/
+/.idea/
+/build/
+/out/
+alexa-admin-app/out
+alexa-admin-app/build
+submitToCanvas.asn

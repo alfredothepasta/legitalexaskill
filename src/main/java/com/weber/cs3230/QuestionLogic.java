@@ -5,7 +5,7 @@ public class QuestionLogic {
     public static String answerQuestion(String input){
         String output;
 
-        input.toLowerCase();
+        input = input.toLowerCase();
         String appendStatement = "\nThank you for your question, please ask another or type \"exit\" to quit.";
 
         switch (input) {

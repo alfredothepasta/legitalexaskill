@@ -4,15 +4,29 @@ import java.util.Scanner;
 
 // I had to think up another class, so I just slapped the loop logic in here. I feel it's pointless to not just put this in the main but I'm following the assignment.
 public class ChatBotLoop {
-    public static void programLoop(){
+    private final QuestionLogic questionLogic;
+
+    public ChatBotLoop(){
+        this.questionLogic = new QuestionLogic();
+    }
+
+    public void programLoop(){
+        System.out.println("Hey there, ask me a question! Or don't. You can type \"exit\" to close me.");
         Scanner input = new Scanner(System.in);
         String question = "";
 
-        // while the question doesn't
-        while(!question.equals("exit")){
+        while(true){
             question = input.nextLine();
-            question.toLowerCase();
-            System.out.println(QuestionLogic.answerQuestion(question));
+            if (question.equals("exit")) break;
+            System.out.println(this.questionLogic.answerQuestion(question));
+
         }
+
+        System.out.println("You asked the following questions:");
+        for (String questionAsked : this.questionLogic.getQuestionsAsked()) {
+            System.out.println(questionAsked);
+        }
+
+        System.out.println("Thank you for using dumb chat bot.");
     }
 }

@@ -1,4 +1,6 @@
 plugins {
+    id 'org.springframework.boot' version '2.7.0'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
 
@@ -18,23 +20,16 @@ wrapper {
 }
 
 dependencies {
-    implementation 'commons-cli:commons-cli:1.4'
-    implementation 'com.google.code.gson:gson:2.8.8'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-all:1.9.5'
+bootJar {
+    archiveClassifier.set('boot')
 }
 
 jar {
-    archiveName 'chatbot.jar'
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes "Main-Class": "com.weber.cs3230.ChatMain"
-    }
-
-    from {
-        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+    archiveClassifier.set('')
 }
 
 task generateAssignmentFile() {
@@ -62,11 +57,24 @@ task generateAssignmentFile() {
         }
         def gitRemote = "$stdoutGitRemote".trim()
 
-        println "git info: remote='$gitRemote' branch='$gitBranch', commit='$gitCommit'"
+        def gitHerokuRemote = ""
+        try {
+            def stdoutGitHerokuRemote = new ByteArrayOutputStream()
+            exec {
+                commandLine "git", "config", "--get", "remote.heroku.url"
+                standardOutput = stdoutGitHerokuRemote
+            }
+            gitHerokuRemote = "$stdoutGitHerokuRemote".trim()
+        } catch(Exception e) {
+            gitHerokuRemote = e.getMessage()
+        }
+
+        println "git info: remote='$gitRemote' herokuRemote=$gitHerokuRemote branch='$gitBranch', commit='$gitCommit'"
 
         new File(projectDir, "submitToCanvas.asn").text = """
 {
    "remote":"$gitRemote",
+   "gitHerokuRemote":"$gitHerokuRemote",
    "branch":"$gitBranch",
    "commit":"$gitCommit"
 }

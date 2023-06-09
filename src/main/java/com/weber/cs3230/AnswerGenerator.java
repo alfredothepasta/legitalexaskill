@@ -2,12 +2,11 @@ package com.weber.cs3230;
 
 import java.util.*;
 
-public class QuestionLogic implements AnswerGenerator {
+public abstract class AnswerGenerator {
 
     protected final List<String> answers = new ArrayList<>();
     protected String lastUsedAnswer;
 
-    @Override
     public String getAnswer() {
         String output;
         // shuffle

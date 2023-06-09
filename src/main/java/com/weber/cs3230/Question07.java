@@ -1,6 +1,6 @@
 package com.weber.cs3230;
 
-public class Question07 extends QuestionLogic{
+public class Question07 extends AnswerGenerator {
     public Question07(){
         answers.add("The blowhole of a whale serves as its breathing apparatus, allowing it to exhale and inhale air.");
         answers.add("A whale's blowhole plays a vital role in enabling it to breathe by facilitating the exchange of air.");

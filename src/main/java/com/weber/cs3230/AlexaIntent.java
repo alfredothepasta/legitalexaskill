@@ -39,8 +39,5 @@ public enum AlexaIntent {
 
     public static void main(String[] args) {
         System.out.println(AlexaIntent.getIntentFromString("what is the largest species of whale").answer.getAnswer());
-
-
-
     }
 }

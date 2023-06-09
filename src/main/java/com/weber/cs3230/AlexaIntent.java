@@ -1,5 +1,9 @@
 package com.weber.cs3230;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.function.Predicate;
+
 public enum AlexaIntent {
     LARGEST_WHALE("largest_whale_species", new Question01()),
     WHALE_COMMUNICATION("whale_communication", new Question02()),
@@ -29,15 +33,20 @@ public enum AlexaIntent {
     }
 
     public static AlexaIntent getIntentFromString(String intentString) {
-        for (AlexaIntent alexaIntent : AlexaIntent.values()) {
-            if (alexaIntent.intentName.equalsIgnoreCase(intentString)) {
-                return alexaIntent;
-            }
-        }
-        return null;
+//        for (AlexaIntent alexaIntent : AlexaIntent.values()) {
+//            if (alexaIntent.intentName.equalsIgnoreCase(intentString)) {
+//                return alexaIntent;
+//            }
+//        }
+
+        return Arrays.asList(AlexaIntent.values()).stream()
+                .filter(thing -> thing.intentName.equalsIgnoreCase(intentString))
+                .findFirst().orElse(null);
     }
 
+
+    // This is for me and me only
     public static void main(String[] args) {
-        System.out.println(AlexaIntent.getIntentFromString("what is the largest species of whale").answer.getAnswer());
+
     }
 }

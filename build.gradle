@@ -4,6 +4,10 @@ plugins {
     id 'java'
 }
 
+configurations {
+    all*.exclude module: 'spring-boot-starter-logging'
+}
+
 group = 'com.weber.cs3230'
 version = '1.0.0-SNAPSHOT'
 
@@ -22,6 +26,8 @@ wrapper {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'com.amazon.alexa:alexa-skills-kit:1.8.1'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2'
 }
 
 bootJar {

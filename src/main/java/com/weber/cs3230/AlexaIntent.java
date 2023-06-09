@@ -10,7 +10,7 @@ public enum AlexaIntent {
     PURPOSE_OF_BLOWHOLE("purpose_of_blowhole", new Question07()),
     MIGRATION("how_they_migrate", new Question08()),
     AVG_LIFESPAN("average_whale_lifespan", new Question09()),
-    NAVIGATION("how_whales_navigate", new Question10());
+    ECHOLOCATION("how_whales_use_echolocation", new Question10());
 
 
 

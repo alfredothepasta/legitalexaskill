@@ -13,7 +13,7 @@ public class Question01 extends QuestionStrings {
     @Override
     public List<String> questionVariableName() {
         ArrayList<String> keywords = new ArrayList<>();
-        keywords.add("Largest");
+        keywords.add("largest");
         keywords.add("biggest");
         return keywords;
     }

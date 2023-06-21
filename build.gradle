@@ -28,6 +28,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'com.amazon.alexa:alexa-skills-kit:1.8.1'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
 }
 
 bootJar {

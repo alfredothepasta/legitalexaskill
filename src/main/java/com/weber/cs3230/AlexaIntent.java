@@ -38,8 +38,10 @@ public enum AlexaIntent {
 //                return alexaIntent;
 //            }
 //        }
+        MetricsRecorder metricsRecorder1 = new MetricsRecorder();
+        metricsRecorder1.recordMetric(intentString);
 
-        return Arrays.asList(AlexaIntent.values()).stream()
+        return Arrays.stream(AlexaIntent.values())
                 .filter(thing -> thing.intentName.equalsIgnoreCase(intentString))
                 .findFirst().orElse(null);
     }

@@ -11,7 +11,10 @@ public class AlexaIntentHandler {
         AlexaIntent intent = AlexaIntent.getIntentFromString(intentString);
 
 
-         AnswerGenerator answerGenerator = intent.getAnswer();
+         if(intent == null){
+             return null;
+         }
+        AnswerGenerator answerGenerator = intent.getAnswer();
          return new Answer(answerGenerator.getAnswer());
 
 

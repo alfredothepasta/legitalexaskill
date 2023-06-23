@@ -4,12 +4,13 @@ import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.speechlet.*;
 import com.weber.cs3230.AlexaIntentHandler;
 import com.weber.cs3230.dto.Answer;
+import com.weber.cs3230.MetricsRecorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class HandlerSpeechlet implements SpeechletV2 {
-
+    MetricsRecorder recorder = new MetricsRecorder();
     AlexaIntentHandler handler;
     AlexaUtils utils = new AlexaUtils("Ask me something else");
 
@@ -20,7 +21,7 @@ public class HandlerSpeechlet implements SpeechletV2 {
 
     @Override
     public void onSessionStarted(SpeechletRequestEnvelope<SessionStartedRequest> requestEnvelope) {
-
+        recorder.recordMetric("StartedSession");
     }
 
     @Override
@@ -32,6 +33,7 @@ public class HandlerSpeechlet implements SpeechletV2 {
     public SpeechletResponse onIntent(SpeechletRequestEnvelope<IntentRequest> requestEnvelope) {
         Answer answer = handler.handleIntent(requestEnvelope.getRequest().getIntent().getName());
         if(answer == null){
+            recorder.recordMetric("NullQuestion");
             return utils.getUnrecognizedResponse(requestEnvelope.getSession(), "Whale Facts", "You wot mate?");
         }
         return utils.getNormalResponse(requestEnvelope.getSession(), "Whale Facts", answer.getText());

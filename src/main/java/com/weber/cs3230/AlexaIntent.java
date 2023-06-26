@@ -30,6 +30,7 @@ public enum AlexaIntent {
     AlexaIntent(String intentName, AnswerGenerator answer) {
         this.intentName = intentName;
         this.answer = answer;
+        this.answer.setIntent(intentName);
     }
 
     public static AlexaIntent getIntentFromString(String intentString) {

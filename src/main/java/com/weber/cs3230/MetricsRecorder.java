@@ -17,10 +17,14 @@ public class MetricsRecorder {
         metric.setEventName(eventName);
         metric.setAppName("Whale Facts");
         final String json = new Gson().toJson(metric);
-        Metric metricResult = httpCommunicator.communicate(HttpMethod.POST, "https://alexa-ghost.herokuapp.com/metric", json, Metric.class);
-        // TODO log this
-        log.info("Metric recorded: " + metric.getEventName());
-        log.info("EventID: " + metricResult.getMetricID());
+        try {
+            Metric metricResult = httpCommunicator.communicate(HttpMethod.POST, "https://alexa-ghost.herokuapp.com/metric", json, Metric.class);
+            log.info("Metric recorded: " + metric.getEventName());
+            log.info("EventID: " + metricResult.getMetricID());
+        } catch (Exception e) {
+            log.error("The HTTP Communication Failed", e);
+        }
+
 //        System.out.println(metricResult.getMetricID());
     }
 }

@@ -55,7 +55,6 @@ public class HandlerSpeechlet implements SpeechletV2 {
             log.error("Unknown Error.", e);
             return utils.getUnrecognizedResponse(requestEnvelope.getSession(), "Whale Facts", "An unknown error has occurred. Abandon hope.");
         }
-
     }
 
     @Override

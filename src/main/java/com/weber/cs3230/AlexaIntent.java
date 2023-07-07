@@ -1,36 +1,31 @@
 package com.weber.cs3230;
 
-import com.weber.cs3230.questions.*;
 
 import java.util.Arrays;
 
 public enum AlexaIntent {
-    LARGEST_WHALE("largest_whale_species", new LargestWhaleSpecies()),
-    WHALE_COMMUNICATION("whale_communication", new WhaleCommunication()),
-    HUMPBACK_KNOWN_FOR("known_for_displays", new KnownForDisplays()),
-    BLUE_WHALE_DIET("blue_whale_diet", new BlueWhaleDiet()),
-    TOOTHED_V_BALEEN("toothed_vs_baleen", new ToothedVsBaleen()),
-    HUMPBACK_SONG_LENGTH("humpback_song_length", new HumpbackSongLength()),
-    PURPOSE_OF_BLOWHOLE("purpose_of_blowhole", new PurposeOfBlowhole()),
-    MIGRATION("how_they_migrate", new HowTheyMigrate()),
-    AVG_LIFESPAN("average_whale_lifespan", new AverateWhaleLifespan()),
-    ECHOLOCATION("how_whales_use_echolocation", new HowWhalesUseEcholocation());
-
-
-
+    LARGEST_WHALE("largest_whale_species"),
+    WHALE_COMMUNICATION("whale_communication" ),
+    HUMPBACK_KNOWN_FOR("known_for_displays"),
+    BLUE_WHALE_DIET("blue_whale_diet"),
+    TOOTHED_V_BALEEN("toothed_vs_baleen"),
+    HUMPBACK_SONG_LENGTH("humpback_song_length"),
+    PURPOSE_OF_BLOWHOLE("purpose_of_blowhole" ),
+    MIGRATION("how_they_migrate" ),
+    AVG_LIFESPAN("average_whale_lifespan"),
+    ECHOLOCATION("how_whales_use_echolocation");
+//
+//
+//
     private final String intentName;
-    private final AnswerGenerator answer;
+//    private final AnswerGenerator answer;
+//
+//    public AnswerGenerator getAnswer() {
+//        return answer;
+//    }
 
-    public AnswerGenerator getAnswer() {
-        return answer;
-    }
-
-
-
-    AlexaIntent(String intentName, AnswerGenerator answer) {
+    AlexaIntent(String intentName) {
         this.intentName = intentName;
-        this.answer = answer;
-        this.answer.setIntent(intentName);
     }
 
     public static AlexaIntent getIntentFromString(String intentString) {
@@ -46,10 +41,10 @@ public enum AlexaIntent {
                 .filter(thing -> thing.intentName.equalsIgnoreCase(intentString))
                 .findFirst().orElse(null);
     }
-
-
-    // This is for me and me only
-    public static void main(String[] args) {
-
-    }
+//
+//
+//    // This is for me and me only
+//    public static void main(String[] args) {
+//
+//    }
 }

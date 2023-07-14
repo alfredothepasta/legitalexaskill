@@ -14,26 +14,14 @@ public enum AlexaIntent {
     MIGRATION("how_they_migrate" ),
     AVG_LIFESPAN("average_whale_lifespan"),
     ECHOLOCATION("how_whales_use_echolocation");
-//
-//
-//
+
     private final String intentName;
-//    private final AnswerGenerator answer;
-//
-//    public AnswerGenerator getAnswer() {
-//        return answer;
-//    }
 
     AlexaIntent(String intentName) {
         this.intentName = intentName;
     }
 
     public static AlexaIntent getIntentFromString(String intentString) {
-//        for (AlexaIntent alexaIntent : AlexaIntent.values()) {
-//            if (alexaIntent.intentName.equalsIgnoreCase(intentString)) {
-//                return alexaIntent;
-//            }
-//        }
         MetricsRecorder metricsRecorder1 = new MetricsRecorder();
         metricsRecorder1.recordMetric(intentString);
 
@@ -41,10 +29,4 @@ public enum AlexaIntent {
                 .filter(thing -> thing.intentName.equalsIgnoreCase(intentString))
                 .findFirst().orElse(null);
     }
-//
-//
-//    // This is for me and me only
-//    public static void main(String[] args) {
-//
-//    }
 }

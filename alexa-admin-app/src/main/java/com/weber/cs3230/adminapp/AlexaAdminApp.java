@@ -9,23 +9,21 @@ import java.awt.*;
 public class AlexaAdminApp {
 
     public static void main(String[] args) {
-        //TODO make a Swing application
         SwingUtilities.invokeLater(() -> {
-                    new AlexaAdminApp().showMainFrame();
-                });
-    }
+            new MainFrame();
 
-    private void showMainFrame() {
-        // show the login screen first
-        LoginDialogue loginDialogue = new LoginDialogue();
-        loginDialogue.setVisible(true);
-
-        JFrame mainFrame = new JFrame();
-        mainFrame.setPreferredSize(new Dimension(500, 700));//200=width, 300=height
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.add(new MainPanel()); //add JPanel
-        mainFrame.pack();
-        mainFrame.setVisible(true); //hangs here
+        });
+        //TODO make a Swing application
+//        SwingUtilities.invokeLater(() -> {
+//            LoginDialogue loginDialogue = new LoginDialogue();
+//            loginDialogue.setVisible(true);
+//
+//            if (loginDialogue.isLoggedIn()) {
+//                new MainFrame();
+//            } else {
+//                System.exit(0);
+//            }
+//        });
     }
 
 }

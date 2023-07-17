@@ -83,24 +83,20 @@ public class MainPanel extends JPanel {
     }
     private JButton editRow(){
         JButton button = new JButton("Edit Row");
+
         button.addActionListener(e -> {
             int row = table.getSelectedRow();
             String intentName = intentItems.get(row).getIntentName();
 
-
-            AddEditDialog editDialog = new AddEditDialog(false);
+            AddEditDialog editDialog = new AddEditDialog(false, intentName);
             editDialog.setVisible(true);
-
 
             if(editDialog.isSaveClicked()){
                 String enteredIntent = editDialog.getIntentNameEntered();
-
-
+                intentItems.set(row, new IntentTableItem(enteredIntent, new Date().toString()));
+                updateTable();
             }
         });
-
-
-
 
         return button;
     }

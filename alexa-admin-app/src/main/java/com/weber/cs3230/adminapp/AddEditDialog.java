@@ -14,9 +14,19 @@ public class AddEditDialog extends JDialog {
         this.addingNew = addingNew;
         setPreferredSize(new Dimension(300,  200));
         setModalityType(ModalityType.APPLICATION_MODAL);
+        intentTextField = new JTextField();
         add(getAddEditPanel());
         pack();
 
+    }
+
+    public AddEditDialog(boolean addingNew, String currentIntent){
+        this.addingNew = addingNew;
+        setPreferredSize(new Dimension(300,  200));
+        setModalityType(ModalityType.APPLICATION_MODAL);
+        intentTextField = new JTextField(currentIntent);
+        add(getAddEditPanel());
+        pack();
     }
 
     private JComponent getAddEditPanel() {
@@ -29,21 +39,22 @@ public class AddEditDialog extends JDialog {
     private JComponent getIntentEntryPanel() {
         JPanel panel = new JPanel(new GridLayout(2, 2));
         panel.add(new JLabel("Intent Name: "));
-        panel.add(intentTextField = new JTextField());
+        panel.add(intentTextField);
         panel.add(cancelButton());
         panel.add(saveButton());
-
-
-
-
         return panel;
     }
+
+
 
     private JButton saveButton() {
         JButton saveButton = new JButton("Save");
         saveButton.addActionListener(e -> {
             this.intentNameEntered = intentTextField.getText();
             saveClicked = true;
+
+            setVisible(false);
+            dispose();
         });
         return saveButton;
     }

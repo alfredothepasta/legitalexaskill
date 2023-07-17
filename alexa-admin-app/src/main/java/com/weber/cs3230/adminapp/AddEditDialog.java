@@ -17,7 +17,6 @@ public class AddEditDialog extends JDialog {
         intentTextField = new JTextField();
         add(getAddEditPanel());
         pack();
-
     }
 
     public AddEditDialog(boolean addingNew, String currentIntent){

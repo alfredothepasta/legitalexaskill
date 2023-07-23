@@ -6,6 +6,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
 
+// well that was a nightmare to make. I'm sorry you have to try to read this.
+// Everything works now and I honestly have no idea how it works and I wrote it.
 public class AnswersDialog extends JDialog {
 
 
@@ -21,13 +23,17 @@ public class AnswersDialog extends JDialog {
 
     private JTextField editTextField;
 
-    private final String[] columnNames = {"Intent", "Date Added"};
+    private final String[] columnNames = {"Answer"};
 
 
     public AnswersDialog(String currentIntent, Map<String, ArrayList<String>> answerMap){
         this.currentIntent = currentIntent;
-        intentAnswers = (ArrayList<String>) answerMap.get(currentIntent).clone();
-        setPreferredSize(new Dimension(500,  200));
+        if(answerMap.containsKey(currentIntent)) {
+            intentAnswers = (ArrayList<String>) answerMap.get(currentIntent).clone();
+        } else {
+            intentAnswers = new ArrayList<String>();
+        }
+        setPreferredSize(new Dimension(700,  200));
         setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         add(getAnswersDialog());
         pack();
@@ -83,8 +89,11 @@ public class AnswersDialog extends JDialog {
     private JButton addButton(){
         JButton addButton = new JButton("Add");
         addButton.addActionListener(e -> {
-            intentAnswers.add(editTextField.getText());
-            updateTable();
+            if(!editTextField.getText().trim().equals("")) {
+                intentAnswers.add(editTextField.getText());
+                editTextField.setText("");
+                updateTable();
+            }
         });
 
         return addButton;
@@ -107,9 +116,12 @@ public class AnswersDialog extends JDialog {
         JButton editButton = new JButton("Edit");
         editButton.addActionListener(e -> {
             // replace button panel with the edit button panel
-            createEditButtonPanel();
-            repaint();
-
+            if(table.isColumnSelected(0)) {
+                getSelectedRow();
+                createEditButtonPanel();
+                table.setEnabled(false);
+                editTextField.setText(intentAnswers.get(getSelectedRow()));
+            }
         });
 
         return editButton;
@@ -158,16 +170,23 @@ public class AnswersDialog extends JDialog {
 
     private JButton editSave(){
         JButton editSave = new JButton("Save");
-        // todo: add action listener
+        editSave.addActionListener(e -> {
+            intentAnswers.remove(getSelectedRow());
+            intentAnswers.add(getSelectedRow(), editTextField.getText());
+            editTextField.setText("");
+            table.setEnabled(true);
+            updateTable();
+            createStandardButtonPanel();
+        });
 
         return editSave;
     }
 
     private JButton editCancel(){
         JButton editCancel = new JButton("Cancel");
-        // todo: add action listener
         editCancel.addActionListener(e->{
-//            editTextField.setText("");
+            editTextField.setText("");
+            table.setEnabled(true);
             createStandardButtonPanel();
         });
 
@@ -175,8 +194,9 @@ public class AnswersDialog extends JDialog {
         return editCancel;
     }
 
-    private void swapButtonPanel(){
-
+    private int getSelectedRow(){
+        int row = table.getSelectedRow();
+        return row;
     }
 
 

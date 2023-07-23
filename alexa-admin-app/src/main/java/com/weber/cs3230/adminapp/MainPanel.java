@@ -148,14 +148,12 @@ public class MainPanel extends JPanel {
     }
 
     private boolean intentListContains(String intent){
-        boolean contains = false;
         for (IntentTableItem item: intentItems) {
             if (intent.equals(item.getIntentName())) {
-                contains = true;
-                break;
+                return true;
             }
         }
-        return contains;
+        return false;
     }
 
     private void updateTable(){

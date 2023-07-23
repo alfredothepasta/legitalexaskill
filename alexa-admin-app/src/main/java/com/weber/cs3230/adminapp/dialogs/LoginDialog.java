@@ -3,13 +3,13 @@ package com.weber.cs3230.adminapp.dialogs;
 import javax.swing.*;
 import java.awt.*;
 
-public class LoginDialogue extends JDialog {
+public class LoginDialog extends JDialog {
 
     JTextField usernameTextField;
     JPasswordField passwordTextField;
     private boolean isLoggedIn;
 
-    public LoginDialogue() {
+    public LoginDialog() {
         usernameTextField = new JTextField();
         passwordTextField = new JPasswordField();
         isLoggedIn = false;

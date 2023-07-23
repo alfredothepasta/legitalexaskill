@@ -3,6 +3,7 @@ package com.weber.cs3230.adminapp;
 import com.weber.cs3230.adminapp.dataItems.AnswerDummyData;
 import com.weber.cs3230.adminapp.dataItems.IntentTableItem;
 import com.weber.cs3230.adminapp.dialogs.AddEditDialog;
+import com.weber.cs3230.adminapp.dialogs.AnswersDialog;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -129,7 +130,14 @@ public class MainPanel extends JPanel {
             int row = table.getSelectedRow();
             String intentName = intentItems.get(row).getIntentName();
 
-            // todo edit answers opens answers dialogue
+
+            AnswersDialog answersDialog = new AnswersDialog(intentName, answers);
+            answersDialog.setVisible(true);
+
+            // get the array list from the answers dialog and put the new updated one into the map
+            if(answersDialog.isSaveClicked()) {
+                answers.put(intentName, answersDialog.getIntentAnswers());
+            }
 
         });
         return  editAnswers;

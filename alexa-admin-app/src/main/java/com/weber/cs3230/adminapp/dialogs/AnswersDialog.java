@@ -5,7 +5,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AnswersDialog extends JDialog {
 
@@ -18,18 +17,11 @@ public class AnswersDialog extends JDialog {
 
 
     private boolean saveClicked = false;
-
-    private JButton addButton = addButton();
-    private JButton editButton = editButton();
-    private JButton deleteButton = deleteButton();
-    private JButton saveAndCloseButton = saveAndCloseButton();
-    private JButton cancelButton = cancelButton();
-
-    private JComponent buttonPanel = createButtonPanel();
+    private JComponent buttonPanel = buttonPanel = new JPanel(new GridLayout(1, 5));;
 
     private JTextField editTextField;
 
-    private String[] columnNames = {"Intent", "Date Added"};
+    private final String[] columnNames = {"Intent", "Date Added"};
 
 
     public AnswersDialog(String currentIntent, Map<String, ArrayList<String>> answerMap){
@@ -62,30 +54,30 @@ public class AnswersDialog extends JDialog {
         JPanel panel = new JPanel(new BorderLayout());
         editTextField = new JTextField();
         panel.add(editTextField, BorderLayout.CENTER);
+        createStandardButtonPanel();
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
 
         return panel;
     }
 
-    private JComponent createButtonPanel(){
-        JPanel panel = new JPanel(new GridLayout(1, 5));
-        panel.add(addButton);
-        panel.add(editButton);
-        panel.add(deleteButton);
-        panel.add(saveAndCloseButton);
-        panel.add(cancelButton);
-        return panel;
-
+    private void createStandardButtonPanel(){
+//        buttonPanel = new JPanel(new GridLayout(1, 5));
+        buttonPanel.removeAll();
+        buttonPanel.add(addButton());
+        buttonPanel.add(editButton());
+        buttonPanel.add(deleteButton());
+        buttonPanel.add(saveAndCloseButton());
+        buttonPanel.add(cancelButton());
+        buttonPanel.revalidate();
     }
 
-    private JComponent createEditButtonPanel(){
-        JPanel panel = new JPanel(new GridLayout(1, 5));
-        panel.add(editSave());
-        panel.add(editCancel());
-
-
-        return panel;
+    private void createEditButtonPanel(){
+//        buttonPanel = new JPanel(new GridLayout(1, 5));
+        buttonPanel.removeAll();
+        buttonPanel.add(editSave());
+        buttonPanel.add(editCancel());
+        buttonPanel.revalidate();
     }
 
     private JButton addButton(){
@@ -115,7 +107,7 @@ public class AnswersDialog extends JDialog {
         JButton editButton = new JButton("Edit");
         editButton.addActionListener(e -> {
             // replace button panel with the edit button panel
-            buttonPanel = createEditButtonPanel();
+            createEditButtonPanel();
             repaint();
 
         });
@@ -174,6 +166,10 @@ public class AnswersDialog extends JDialog {
     private JButton editCancel(){
         JButton editCancel = new JButton("Cancel");
         // todo: add action listener
+        editCancel.addActionListener(e->{
+//            editTextField.setText("");
+            createStandardButtonPanel();
+        });
 
 
         return editCancel;

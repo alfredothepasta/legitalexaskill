@@ -7,13 +7,12 @@ import javax.swing.*;
  * Don't let David see it.
  * Who am I kidding, I'll forget to delete it.
  *
- * todo: delete this
+ * todo: delete this, maybe figure out how git ignore works
  */
 public class FakeMain {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new MainFrame();
-
         });
     }
 }

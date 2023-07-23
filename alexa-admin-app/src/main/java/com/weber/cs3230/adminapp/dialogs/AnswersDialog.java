@@ -1,4 +1,4 @@
-package com.weber.cs3230.adminapp;
+package com.weber.cs3230.adminapp.dialogs;
 
 import java.util.ArrayList;
 import java.util.Map;

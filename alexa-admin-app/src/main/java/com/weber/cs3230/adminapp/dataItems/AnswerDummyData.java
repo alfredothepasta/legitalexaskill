@@ -1,4 +1,4 @@
-package com.weber.cs3230.adminapp;
+package com.weber.cs3230.adminapp.dataItems;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.Map;
 public class AnswerDummyData {
     private final Map<String, ArrayList<String>> AnswerList = new HashMap<>();
 
-    AnswerDummyData(){
+    public AnswerDummyData(){
         AnswerList.put("largest_whale_species", dummyAnswers());
         AnswerList.put("whale_communication", dummyAnswers());
         AnswerList.put("known_for_displays", dummyAnswers());

@@ -1,17 +1,24 @@
 package com.weber.cs3230.adminapp;
 
+import com.weber.cs3230.adminapp.dataItems.AnswerDummyData;
+import com.weber.cs3230.adminapp.dataItems.IntentTableItem;
+import com.weber.cs3230.adminapp.dialogs.AddEditDialog;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Date;
 
 public class MainPanel extends JPanel {
 
-    private java.util.List<IntentTableItem> intentItems = new ArrayList<>();
+    private final java.util.List<IntentTableItem> intentItems = new ArrayList<>();
     DefaultTableModel tableModel;
     String[] columnNames = {"Intent", "Date Added"};
     JTable table;
+
+    private final Map<String, ArrayList<String>> answers = new AnswerDummyData().getAnswerList();
 
     public MainPanel() {
         super(new BorderLayout());
@@ -57,10 +64,11 @@ public class MainPanel extends JPanel {
     }
 
     private JPanel createButtonPanel (){
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 3));
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 4));
         buttonPanel.add(addNewRow());
         buttonPanel.add(editRow());
         buttonPanel.add(deleteRow());
+        buttonPanel.add(editAnswers());
         return buttonPanel;
 
     }
@@ -104,11 +112,27 @@ public class MainPanel extends JPanel {
     private JButton deleteRow(){
         JButton deleteButton = new JButton("Delete Row");
         deleteButton.addActionListener(e -> {
+            // todo: in a perfect universe where this is going to production, wrap in try/catch
             int row = table.getSelectedRow();
             intentItems.remove(row);
             updateTable();
         });
         return  deleteButton;
+    }
+
+    private JButton editAnswers(){
+        JButton editAnswers = new JButton("Edit Answers");
+
+
+        editAnswers.addActionListener(e -> {
+            // pass in the answers and the selected row intent name
+            int row = table.getSelectedRow();
+            String intentName = intentItems.get(row).getIntentName();
+
+            // todo edit answers opens answers dialogue
+
+        });
+        return  editAnswers;
     }
 
     private void updateTable(){

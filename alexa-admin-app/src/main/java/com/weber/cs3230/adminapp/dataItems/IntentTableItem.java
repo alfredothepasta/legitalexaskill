@@ -1,4 +1,4 @@
-package com.weber.cs3230.adminapp;
+package com.weber.cs3230.adminapp.dataItems;
 
 public class IntentTableItem {
     private String intentName;

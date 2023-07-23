@@ -83,9 +83,13 @@ public class MainPanel extends JPanel {
             addDialog.setVisible(true);
 
             if(addDialog.isSaveClicked()){
-                String enteredIntent = addDialog.getIntentNameEntered();
-                intentItems.add(new IntentTableItem(enteredIntent, new Date().toString()));
-                updateTable();
+                String enteredIntent = addDialog.getIntentNameEntered().trim();
+                if(!intentListContains(enteredIntent)) {
+                    intentItems.add(new IntentTableItem(enteredIntent, new Date().toString()));
+                    updateTable();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Intent Already Exists.", "Warning", JOptionPane.WARNING_MESSAGE);
+                }
             }
         });
         return  button;
@@ -141,6 +145,17 @@ public class MainPanel extends JPanel {
 
         });
         return  editAnswers;
+    }
+
+    private boolean intentListContains(String intent){
+        boolean contains = false;
+        for (IntentTableItem item: intentItems) {
+            if (intent.equals(item.getIntentName())) {
+                contains = true;
+                break;
+            }
+        }
+        return contains;
     }
 
     private void updateTable(){

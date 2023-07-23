@@ -15,7 +15,7 @@ public class AnswersDialog extends JDialog {
     private final String currentIntent;
 
     private JTable table;
-    DefaultTableModel tableModel;
+    private DefaultTableModel tableModel;
 
 
     private boolean saveClicked = false;

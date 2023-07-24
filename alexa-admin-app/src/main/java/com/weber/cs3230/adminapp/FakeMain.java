@@ -1,5 +1,7 @@
 package com.weber.cs3230.adminapp;
 
+import com.weber.cs3230.adminapp.thread.LockoutThread;
+
 import javax.swing.*;
 
 /**

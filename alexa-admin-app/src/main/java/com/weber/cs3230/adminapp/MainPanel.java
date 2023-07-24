@@ -19,10 +19,14 @@ public class MainPanel extends JPanel {
     String[] columnNames = {"Intent", "Date Added"};
     JTable table;
 
+    private final MainFrame mainFrame;
+
+
     private final Map<String, ArrayList<String>> answers = new AnswerDummyData().getAnswerList();
 
-    public MainPanel() {
+    public MainPanel(MainFrame mainFrame) {
         super(new BorderLayout());
+        this.mainFrame = mainFrame;
         createMainPanel();
     }
 
@@ -77,6 +81,7 @@ public class MainPanel extends JPanel {
     private JButton addNewRow(){
         JButton button = new JButton("Add Row");
         button.addActionListener(e -> {
+            resetTimeToLockout();
 
             AddEditDialog addDialog = new AddEditDialog(true);
 
@@ -98,6 +103,7 @@ public class MainPanel extends JPanel {
         JButton button = new JButton("Edit Row");
 
         button.addActionListener(e -> {
+            resetTimeToLockout();
             int row = table.getSelectedRow();
             String intentName = intentItems.get(row).getIntentName();
 
@@ -117,6 +123,7 @@ public class MainPanel extends JPanel {
     private JButton deleteRow(){
         JButton deleteButton = new JButton("Delete Row");
         deleteButton.addActionListener(e -> {
+            resetTimeToLockout();
             // todo: in a perfect universe where this is going to production, wrap in try/catch
             int row = table.getSelectedRow();
             intentItems.remove(row);
@@ -131,6 +138,7 @@ public class MainPanel extends JPanel {
 
         editAnswers.addActionListener(e -> {
             // pass in the answers and the selected row intent name
+            resetTimeToLockout();
             int row = table.getSelectedRow();
             String intentName = intentItems.get(row).getIntentName();
 
@@ -158,6 +166,10 @@ public class MainPanel extends JPanel {
 
     private void updateTable(){
         tableModel.setDataVector(getTableData(), columnNames);
+    }
+
+    private void resetTimeToLockout(){
+        mainFrame.setStartTime(System.currentTimeMillis());
     }
 
 }

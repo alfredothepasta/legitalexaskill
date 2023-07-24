@@ -1,7 +1,11 @@
 package com.weber.cs3230.adminapp.dialogs;
 
+import com.weber.cs3230.adminapp.thread.LockoutThread;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class LoginDialog extends JDialog {
 
@@ -13,6 +17,9 @@ public class LoginDialog extends JDialog {
         usernameTextField = new JTextField();
         passwordTextField = new JPasswordField();
         isLoggedIn = false;
+
+
+
 
         setPreferredSize(new Dimension(300, 200));
         setModalityType(ModalityType.APPLICATION_MODAL);
@@ -39,7 +46,7 @@ public class LoginDialog extends JDialog {
     private JButton loginButton() {
         JButton loginButton = new JButton("Login");
         loginButton.addActionListener(e -> {
-            if(usernameTextField.getText().equals("admin") && passwordTextField.getText().equals("donttellsecurity")){
+            if(usernameTextField.getText().equals("") && passwordTextField.getText().equals("")){
                 isLoggedIn = true;
                 setVisible(false);
             } else {

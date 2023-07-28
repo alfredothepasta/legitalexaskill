@@ -1,6 +1,7 @@
 package com.weber.cs3230.adminapp.thread;
 
 import com.sun.tools.javac.Main;
+import com.weber.cs3230.adminapp.ApplicationController;
 import com.weber.cs3230.adminapp.MainFrame;
 
 public class LockoutThread extends Thread{
@@ -8,10 +9,10 @@ public class LockoutThread extends Thread{
     private final long threadSleepTime = 1_000;
     private final long lockoutTime = 10_000;
 
-    private MainFrame mainFrame;
+    private ApplicationController applicationController;
 
-    public LockoutThread(MainFrame mainFrame){
-        this.mainFrame = mainFrame;
+    public LockoutThread(ApplicationController applicationController){
+        this.applicationController = applicationController;
     }
     public void run() {
 
@@ -30,9 +31,9 @@ public class LockoutThread extends Thread{
             // if so, yeet the joptionwarning and kick back to login
             ;
 
-            if((System.currentTimeMillis() - mainFrame.getStartTime()) >= lockoutTime){
+            if((System.currentTimeMillis() - applicationController.getStartTime()) >= lockoutTime){
                 // do things
-                mainFrame.logout();
+                applicationController.logout();
                 waitingForLockout = false;
             }
 

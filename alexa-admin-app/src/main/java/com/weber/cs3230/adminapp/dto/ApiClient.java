@@ -1,4 +1,4 @@
-package com.weber.cs3230.adminapp.api;
+package com.weber.cs3230.adminapp.dto;
 
 import com.google.gson.Gson;
 

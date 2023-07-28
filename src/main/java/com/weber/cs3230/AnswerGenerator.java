@@ -1,5 +1,6 @@
 package com.weber.cs3230;
 
+
 import com.weber.cs3230.db.AlexaDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

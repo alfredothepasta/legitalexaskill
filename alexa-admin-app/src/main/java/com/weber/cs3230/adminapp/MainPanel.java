@@ -19,14 +19,14 @@ public class MainPanel extends JPanel {
     String[] columnNames = {"Intent", "Date Added"};
     JTable table;
 
-    private final MainFrame mainFrame;
+    private final ApplicationController applicationController;
 
 
     private final Map<String, ArrayList<String>> answers = new AnswerDummyData().getAnswerList();
 
-    public MainPanel(MainFrame mainFrame) {
+    public MainPanel(ApplicationController applicationController) {
         super(new BorderLayout());
-        this.mainFrame = mainFrame;
+        this.applicationController = applicationController;
         createMainPanel();
     }
 
@@ -83,7 +83,7 @@ public class MainPanel extends JPanel {
         button.addActionListener(e -> {
             resetTimeToLockout();
 
-            AddEditDialog addDialog = new AddEditDialog(true);
+            AddEditDialog addDialog = new AddEditDialog(true, applicationController);
 
             addDialog.setVisible(true);
 
@@ -107,7 +107,7 @@ public class MainPanel extends JPanel {
             int row = table.getSelectedRow();
             String intentName = intentItems.get(row).getIntentName();
 
-            AddEditDialog editDialog = new AddEditDialog(false, intentName);
+            AddEditDialog editDialog = new AddEditDialog(false, intentName, applicationController);
             editDialog.setVisible(true);
 
             if(editDialog.isSaveClicked()){
@@ -143,7 +143,7 @@ public class MainPanel extends JPanel {
             String intentName = intentItems.get(row).getIntentName();
 
 
-            AnswersDialog answersDialog = new AnswersDialog(intentName, answers);
+            AnswersDialog answersDialog = new AnswersDialog(intentName, answers, applicationController);
             answersDialog.setVisible(true);
 
             // get the array list from the answers dialog and put the new updated one into the map
@@ -169,7 +169,7 @@ public class MainPanel extends JPanel {
     }
 
     private void resetTimeToLockout(){
-        mainFrame.setStartTime(System.currentTimeMillis());
+        applicationController.setStartTime(System.currentTimeMillis());
     }
 
 }

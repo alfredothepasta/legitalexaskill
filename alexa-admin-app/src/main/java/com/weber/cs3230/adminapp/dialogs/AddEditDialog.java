@@ -1,5 +1,7 @@
 package com.weber.cs3230.adminapp.dialogs;
 
+import com.weber.cs3230.adminapp.ApplicationController;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,8 +12,11 @@ public class AddEditDialog extends JDialog {
     private boolean saveClicked;
     private JTextField intentTextField;
 
-    public AddEditDialog(boolean addingNew){
+    private ApplicationController applicationController;
+
+    public AddEditDialog(boolean addingNew, ApplicationController applicationController){
         this.addingNew = addingNew;
+        this.applicationController = applicationController;
         setPreferredSize(new Dimension(300,  200));
         setModalityType(ModalityType.APPLICATION_MODAL);
         intentTextField = new JTextField();
@@ -19,8 +24,9 @@ public class AddEditDialog extends JDialog {
         pack();
     }
 
-    public AddEditDialog(boolean addingNew, String currentIntent){
+    public AddEditDialog(boolean addingNew, String currentIntent, ApplicationController applicationController){
         this.addingNew = addingNew;
+        this.applicationController = applicationController;
         setPreferredSize(new Dimension(300,  200));
         setModalityType(ModalityType.APPLICATION_MODAL);
         intentTextField = new JTextField(currentIntent);

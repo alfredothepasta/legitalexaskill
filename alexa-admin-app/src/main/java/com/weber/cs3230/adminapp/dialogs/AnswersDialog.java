@@ -1,5 +1,7 @@
 package com.weber.cs3230.adminapp.dialogs;
 
+import com.weber.cs3230.adminapp.ApplicationController;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -25,9 +27,12 @@ public class AnswersDialog extends JDialog {
 
     private final String[] columnNames = {"Answer"};
 
+    private ApplicationController applicationController;
 
-    public AnswersDialog(String currentIntent, Map<String, ArrayList<String>> answerMap){
+
+    public AnswersDialog(String currentIntent, Map<String, ArrayList<String>> answerMap, ApplicationController applicationController){
         this.currentIntent = currentIntent;
+        this.applicationController = applicationController;
         if(answerMap.containsKey(currentIntent)) {
             intentAnswers = (ArrayList<String>) answerMap.get(currentIntent).clone();
         } else {

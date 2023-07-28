@@ -1,11 +1,9 @@
 package com.weber.cs3230.adminapp.dialogs;
 
-import com.weber.cs3230.adminapp.thread.LockoutThread;
+import com.weber.cs3230.adminapp.ApplicationController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class LoginDialog extends JDialog {
 
@@ -13,7 +11,10 @@ public class LoginDialog extends JDialog {
     JPasswordField passwordTextField;
     private boolean isLoggedIn;
 
-    public LoginDialog() {
+    private ApplicationController applicationController;
+
+    public LoginDialog(ApplicationController applicationController) {
+        this.applicationController = applicationController;
         usernameTextField = new JTextField();
         passwordTextField = new JPasswordField();
         isLoggedIn = false;

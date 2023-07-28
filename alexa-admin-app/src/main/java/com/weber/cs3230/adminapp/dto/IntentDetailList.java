@@ -1,4 +1,4 @@
-package com.weber.cs3230.dto;
+package com.weber.cs3230.adminapp.dto;
 
 import java.util.ArrayList;
 import java.util.List;

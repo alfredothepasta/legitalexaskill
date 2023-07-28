@@ -1,4 +1,4 @@
-package com.weber.cs3230.data;
+package com.weber.cs3230.db;
 
 import com.weber.cs3230.dto.*;
 import org.slf4j.Logger;

@@ -1,6 +1,6 @@
 package com.weber.cs3230.controller;
 
-import com.weber.cs3230.data.AlexaDAO;
+import com.weber.cs3230.db.AlexaDAO;
 import com.weber.cs3230.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

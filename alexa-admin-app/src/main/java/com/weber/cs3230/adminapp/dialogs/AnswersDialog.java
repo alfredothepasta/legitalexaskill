@@ -99,7 +99,11 @@ public class AnswersDialog extends JDialog {
                     @Override
                     protected Object doInBackground() throws Exception {
                         // add a new answer
-                        applicationController.makeApiCall().saveNewAnswer(intentID, editTextField.getText());
+                        try {
+                            applicationController.makeApiCall().saveNewAnswer(intentID, editTextField.getText());
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
 
                         return null;
                     }
@@ -166,7 +170,11 @@ public class AnswersDialog extends JDialog {
             SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
                 @Override
                 protected Object doInBackground() throws Exception {
-                    applicationController.makeApiCall().deleteAnswer(intentID, intentAnswerList.getAnswers().get(row).getAnswerID());
+                    try {
+                        applicationController.makeApiCall().deleteAnswer(intentID, intentAnswerList.getAnswers().get(row).getAnswerID());
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
                     return null;
                 }
 
@@ -229,7 +237,11 @@ public class AnswersDialog extends JDialog {
             SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
                 @Override
                 protected Object doInBackground() throws Exception {
-                    applicationController.makeApiCall().updateAnswer(intentID, intentAnswerList.getAnswers().get(getSelectedRow()).getAnswerID(), editTextField.getText());
+                    try {
+                        applicationController.makeApiCall().updateAnswer(intentID, intentAnswerList.getAnswers().get(getSelectedRow()).getAnswerID(), editTextField.getText());
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
                     return null;
                 }
 

@@ -127,7 +127,11 @@ public class MainPanel extends JPanel {
                 SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
                     @Override
                     protected Object doInBackground() throws Exception {
-                        applicationController.makeApiCall().updateIntent(intentDetailList.getIntents().get(row).getIntentID(), enteredIntent);
+                        try {
+                            applicationController.makeApiCall().updateIntent(intentDetailList.getIntents().get(row).getIntentID(), enteredIntent);
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
                         return null;
                     }
 
@@ -155,8 +159,14 @@ public class MainPanel extends JPanel {
             SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
                 @Override
                 protected Object doInBackground() throws Exception {
-                    applicationController.makeApiCall().deleteIntent(intentDetailList.getIntents().get(row).getIntentID());
-                    return null;
+                    boolean successful = true;
+                    try {
+                        applicationController.makeApiCall().deleteIntent(intentDetailList.getIntents().get(row).getIntentID());
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                        successful = false;
+                    }
+                    return successful;
                 }
                 @Override
                 protected void done(){
@@ -189,9 +199,14 @@ public class MainPanel extends JPanel {
             SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
                 @Override
                 protected IntentAnswerList doInBackground() throws Exception {
-                    IntentAnswerList answerList = applicationController.makeApiCall().getAnswers(
-                            intentDetailList.getIntents().get(row).getIntentID()
-                    );
+                    IntentAnswerList answerList = null;
+                    try {
+                        answerList = applicationController.makeApiCall().getAnswers(
+                                intentDetailList.getIntents().get(row).getIntentID()
+                        );
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
                     return answerList;
                 }
 
@@ -233,7 +248,15 @@ public class MainPanel extends JPanel {
 
             @Override
             protected IntentDetailList doInBackground() throws Exception {
-                return applicationController.makeApiCall().getIntents();
+                IntentDetailList output = null;
+
+                try {
+                    output = applicationController.makeApiCall().getIntents();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+
+                return output;
             }
 
             @Override

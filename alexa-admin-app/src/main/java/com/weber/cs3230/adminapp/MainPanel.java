@@ -3,6 +3,7 @@ package com.weber.cs3230.adminapp;
 import com.weber.cs3230.adminapp.dataItems.AnswerDummyData;
 import com.weber.cs3230.adminapp.dialogs.AddEditDialog;
 import com.weber.cs3230.adminapp.dialogs.AnswersDialog;
+import com.weber.cs3230.adminapp.dialogs.LoginDialog;
 import com.weber.cs3230.adminapp.dto.IntentAnswer;
 import com.weber.cs3230.adminapp.dto.IntentAnswerList;
 import com.weber.cs3230.adminapp.dto.IntentDetail;
@@ -197,7 +198,9 @@ public class MainPanel extends JPanel {
                         AnswersDialog answersDialog = new AnswersDialog(intentName, intentID, answerList, applicationController);
                         answersDialog.setVisible(true);
                     } catch (Exception e) {
-                        //todo something about failure
+                        System.out.println(e.getMessage());
+                        JOptionPane.showMessageDialog(MainPanel.this, "A Network Error Occurred.", "Warning", JOptionPane.WARNING_MESSAGE);
+
                     }
                     setCursor(Cursor.getDefaultCursor());
                 }
@@ -235,7 +238,8 @@ public class MainPanel extends JPanel {
                     intentDetailList = (IntentDetailList) get();
                     tableModel.setDataVector(getTableData(), columnNames);
                 } catch (Exception e){
-                    // todo: Inform the user that a network error occurred
+                    System.out.println(e.getMessage());
+                    JOptionPane.showMessageDialog(MainPanel.this, "A Network Error Occurred.", "Warning", JOptionPane.WARNING_MESSAGE);
                 }
 
             }

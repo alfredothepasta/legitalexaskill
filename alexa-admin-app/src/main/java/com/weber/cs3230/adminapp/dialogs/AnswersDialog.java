@@ -1,6 +1,7 @@
 package com.weber.cs3230.adminapp.dialogs;
 
 import com.weber.cs3230.adminapp.ApplicationController;
+import com.weber.cs3230.adminapp.MainPanel;
 import com.weber.cs3230.adminapp.dto.IntentAnswer;
 import com.weber.cs3230.adminapp.dto.IntentAnswerList;
 
@@ -207,7 +208,8 @@ public class AnswersDialog extends JDialog {
                     intentAnswerList = (IntentAnswerList) get();
                     tableModel.setDataVector(getTableData(), columnNames);
                 } catch (Exception e){
-                    // todo: Inform the user that a network error occurred
+                    System.out.println(e.getMessage());
+                    JOptionPane.showMessageDialog(AnswersDialog.this, "A Network Error Occurred.", "Warning", JOptionPane.WARNING_MESSAGE);
                 }
 
             }

@@ -63,7 +63,7 @@ public class MainPanel extends JPanel {
     private JPanel createButtonPanel (){
         JPanel buttonPanel = new JPanel(new GridLayout(1, 4));
         buttonPanel.add(addIntent());
-        buttonPanel.add(editRow());
+        buttonPanel.add(editIntent());
         buttonPanel.add(deleteIntent());
         buttonPanel.add(editAnswers());
         return buttonPanel;
@@ -107,8 +107,8 @@ public class MainPanel extends JPanel {
 
         return  button;
     }
-    private JButton editRow(){
-        JButton button = new JButton("Edit Row");
+    private JButton editIntent(){
+        JButton button = new JButton("Edit Intent");
 
         button.addActionListener(e -> {
             resetTimeToLockout();
@@ -120,8 +120,25 @@ public class MainPanel extends JPanel {
 
             if(editDialog.isSaveClicked()){
                 String enteredIntent = editDialog.getIntentNameEntered();
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+                SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+                    @Override
+                    protected Object doInBackground() throws Exception {
+                        applicationController.makeApiCall().updateIntent(intentDetailList.getIntents().get(row).getIntentID(), enteredIntent);
+                        return null;
+                    }
+
+                    @Override
+                    protected void done(){
+                        updateTableData();
+                        setCursor(Cursor.getDefaultCursor());
+                    }
+                };
+
+                worker.execute();
 //                intentTableItems.set(row, new IntentTableItem(enteredIntent, new Date().toString()));
-                updateTable();
+//                updateTable();
             }
         });
 
@@ -174,6 +191,8 @@ public class MainPanel extends JPanel {
 
             // get the array list from the answers dialog and put the new updated one into the map
             if(answersDialog.isSaveClicked()) {
+                //
+
                 answers.put(intentName, answersDialog.getIntentAnswers());
             }
 
@@ -213,7 +232,7 @@ public class MainPanel extends JPanel {
                     intentDetailList = (IntentDetailList) get();
                     tableModel.setDataVector(getTableData(), columnNames);
                 } catch (Exception e){
-                    // todo: Inform the user tat we failed
+                    // todo: Inform the user that a network error occurred
                 }
 
             }

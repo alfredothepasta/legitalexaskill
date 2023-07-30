@@ -1,7 +1,6 @@
 package com.weber.cs3230.adminapp;
 
 import com.weber.cs3230.adminapp.dataItems.AnswerDummyData;
-import com.weber.cs3230.adminapp.dataItems.IntentTableItem;
 import com.weber.cs3230.adminapp.dialogs.AddEditDialog;
 import com.weber.cs3230.adminapp.dialogs.AnswersDialog;
 import com.weber.cs3230.adminapp.dto.IntentDetail;
@@ -12,12 +11,11 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class MainPanel extends JPanel {
 
-    private final java.util.List<IntentTableItem> intentTableItems = new ArrayList<>();
+    private IntentDetailList intentDetailList;
     DefaultTableModel tableModel;
     String[] columnNames = {"Intent", "Date Added"};
     JTable table;
@@ -27,9 +25,10 @@ public class MainPanel extends JPanel {
 
     private final Map<String, ArrayList<String>> answers = new AnswerDummyData().getAnswerList();
 
-    public MainPanel(ApplicationController applicationController) {
+    public MainPanel(ApplicationController applicationController, IntentDetailList intentDetailList) {
         super(new BorderLayout());
         this.applicationController = applicationController;
+        this.intentDetailList = intentDetailList;
         createMainPanel();
     }
 
@@ -40,8 +39,7 @@ public class MainPanel extends JPanel {
     }
 
     private JComponent createTablePanel() {
-
-        buildTable();
+//        JScrollPane scrollPane = new JScrollPane();
 
         tableModel = new DefaultTableModel(getTableData(), columnNames);
         table = new JTable(tableModel);
@@ -49,13 +47,14 @@ public class MainPanel extends JPanel {
         table.setFillsViewportHeight(true);
         scrollPane.setVisible(true);
         return scrollPane;
+
     }
 
     private Object[][] getTableData(){
         java.util.List<Object[]> rows = new ArrayList<>();
 
-        for (IntentTableItem tableItem : intentTableItems) {
-            rows.add(new Object[]{tableItem.getIntentName(), tableItem.getDateAdded()});
+        for (IntentDetail tableItem : intentDetailList.getIntents()) {
+            rows.add(new Object[]{tableItem.getName(), tableItem.getDateAdded()});
         }
 
 
@@ -64,7 +63,7 @@ public class MainPanel extends JPanel {
 
     private JPanel createButtonPanel (){
         JPanel buttonPanel = new JPanel(new GridLayout(1, 4));
-        buttonPanel.add(addNewRow());
+        buttonPanel.add(addIntent());
         buttonPanel.add(editRow());
         buttonPanel.add(deleteRow());
         buttonPanel.add(editAnswers());
@@ -72,13 +71,12 @@ public class MainPanel extends JPanel {
 
     }
 
-    private JButton addNewRow(){
-        JButton button = new JButton("Add Row");
+    private JButton addIntent(){
+        JButton button = new JButton("Add Intent");
         button.addActionListener(e -> {
             resetTimeToLockout();
 
             AddEditDialog addDialog = new AddEditDialog(true, applicationController);
-
             addDialog.setVisible(true);
 
             if(addDialog.isSaveClicked()){
@@ -86,12 +84,28 @@ public class MainPanel extends JPanel {
                 if(!intentListContains(enteredIntent)) {
                     /*intentTableItems.add(new IntentTableItem(enteredIntent, new Date().toString()));*/
                     // todo : make a thing that adds to the thing
-                    updateTable();
+                    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+                        @Override
+                        protected Object doInBackground() throws Exception {
+                            applicationController.makeApiCall().saveNewIntent(enteredIntent);
+                            updateTableData();
+                            return null;
+                        }
+
+                        @Override
+                        protected void done(){
+                            updateTable();
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    };
+                    worker.execute();
                 } else {
                     JOptionPane.showMessageDialog(this, "Intent Already Exists.", "Warning", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
+
         return  button;
     }
     private JButton editRow(){
@@ -100,7 +114,7 @@ public class MainPanel extends JPanel {
         button.addActionListener(e -> {
             resetTimeToLockout();
             int row = table.getSelectedRow();
-            String intentName = intentTableItems.get(row).getIntentName();
+            String intentName = intentDetailList.getIntents().get(row).getName();
 
             AddEditDialog editDialog = new AddEditDialog(false, intentName, applicationController);
             editDialog.setVisible(true);
@@ -121,7 +135,7 @@ public class MainPanel extends JPanel {
             resetTimeToLockout();
             // todo: in a perfect universe where this is going to production, wrap in try/catch
             int row = table.getSelectedRow();
-            intentTableItems.remove(row);
+//            intentTableItems.remove(row);
             updateTable();
         });
         return  deleteButton;
@@ -135,7 +149,7 @@ public class MainPanel extends JPanel {
             // pass in the answers and the selected row intent name
             resetTimeToLockout();
             int row = table.getSelectedRow();
-            String intentName = intentTableItems.get(row).getIntentName();
+            String intentName = intentDetailList.getIntents().get(row).getName();
 
 
             AnswersDialog answersDialog = new AnswersDialog(intentName, answers, applicationController);
@@ -151,8 +165,8 @@ public class MainPanel extends JPanel {
     }
 
     private boolean intentListContains(String intent){
-        for (IntentTableItem item: intentTableItems) {
-            if (intent.equals(item.getIntentName())) {
+        for (IntentDetail item: intentDetailList.getIntents()) {
+            if (intent.equals(item.getName())) {
                 return true;
             }
         }
@@ -167,7 +181,7 @@ public class MainPanel extends JPanel {
         applicationController.setStartTime(System.currentTimeMillis());
     }
 
-    private void buildTable(){
+    private void updateTableData(){
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
 
@@ -179,17 +193,11 @@ public class MainPanel extends JPanel {
             @Override
             protected void done(){
                 try {
-                    IntentDetailList list = (IntentDetailList) get();
-                    for (IntentDetail intent : list.getIntents())
-                    {
-                        MainPanel.this.intentTableItems.add(new IntentTableItem(intent.getIntentID(), intent.getName(), intent.getDateAdded()));
-                    }
-                    updateTable();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                } catch (ExecutionException e) {
-                    throw new RuntimeException(e);
+                    intentDetailList = (IntentDetailList) get();
+                } catch (Exception e){
+                    // todo: Inform the user tat we failed
                 }
+
                 setCursor(Cursor.getDefaultCursor());
             }
         };

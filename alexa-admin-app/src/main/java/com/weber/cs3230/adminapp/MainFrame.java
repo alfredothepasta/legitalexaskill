@@ -40,6 +40,7 @@ public class MainFrame extends JFrame {
                     mainFrame.add(new MainPanel(applicationController, intentDetailList)); //add JPanel
                     mainFrame.pack();
                     mainFrame.setVisible(true);
+                    setCursor(Cursor.getDefaultCursor());
                 } catch (Exception e) {
 
                 }

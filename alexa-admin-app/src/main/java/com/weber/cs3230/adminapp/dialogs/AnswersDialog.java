@@ -1,6 +1,8 @@
 package com.weber.cs3230.adminapp.dialogs;
 
 import com.weber.cs3230.adminapp.ApplicationController;
+import com.weber.cs3230.adminapp.dto.IntentAnswer;
+import com.weber.cs3230.adminapp.dto.IntentAnswerList;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -13,7 +15,9 @@ import java.util.Map;
 public class AnswersDialog extends JDialog {
 
 
-    private final ArrayList<String> intentAnswers;
+//    private final ArrayList<String> intentAnswers;
+
+    private final IntentAnswerList intentAnswerList;
     private final String currentIntent;
 
     private JTable table;
@@ -30,14 +34,10 @@ public class AnswersDialog extends JDialog {
     private final ApplicationController applicationController;
 
 
-    public AnswersDialog(String currentIntent, Map<String, ArrayList<String>> answerMap, ApplicationController applicationController){
+    public AnswersDialog(String currentIntent, IntentAnswerList intentAnswerList, ApplicationController applicationController){
         this.currentIntent = currentIntent;
         this.applicationController = applicationController;
-        if(answerMap.containsKey(currentIntent)) {
-            intentAnswers = (ArrayList<String>) answerMap.get(currentIntent).clone();
-        } else {
-            intentAnswers = new ArrayList<String>();
-        }
+        this.intentAnswerList = intentAnswerList;
         setPreferredSize(new Dimension(700,  200));
         setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         add(getAnswersDialog());
@@ -78,8 +78,7 @@ public class AnswersDialog extends JDialog {
         buttonPanel.add(addButton());
         buttonPanel.add(editButton());
         buttonPanel.add(deleteButton());
-        buttonPanel.add(saveAndCloseButton());
-        buttonPanel.add(cancelButton());
+        buttonPanel.add(closeButton());
         buttonPanel.revalidate();
     }
 
@@ -95,25 +94,26 @@ public class AnswersDialog extends JDialog {
         JButton addButton = new JButton("Add");
         addButton.addActionListener(e -> {
             if(!editTextField.getText().trim().equals("")) {
-                intentAnswers.add(editTextField.getText());
-                editTextField.setText("");
-                updateTable();
+//                intentAnswerList.getAnswers().add(editTextField.getText());
+//                editTextField.setText("");
+//                updateTable();
             }
         });
 
         return addButton;
     }
 
-    private JButton saveAndCloseButton() {
-        JButton saveButton = new JButton("Save And Close");
-        saveButton.addActionListener(e -> {
+    private JButton closeButton() {
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> {
+
             // update the array of answers
-            saveClicked = true;
+//            saveClicked = true;
 
             setVisible(false);
             dispose();
         });
-        return saveButton;
+        return closeButton;
     }
 
 
@@ -125,7 +125,7 @@ public class AnswersDialog extends JDialog {
                 getSelectedRow();
                 createEditButtonPanel();
                 table.setEnabled(false);
-                editTextField.setText(intentAnswers.get(getSelectedRow()));
+                editTextField.setText(intentAnswerList.getAnswers().get(getSelectedRow()).getText());
             }
         });
 
@@ -138,33 +138,23 @@ public class AnswersDialog extends JDialog {
         deleteButton.addActionListener(e -> {
             // todo: in a perfect universe where this is going to production, wrap in try/catch
             int row = table.getSelectedRow();
-            intentAnswers.remove(row);
+            // todo actually do this in the apiclient
+            intentAnswerList.getAnswers().remove(row);
             updateTable();
         });
 
         return deleteButton;
     }
 
-    private JButton cancelButton(){
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(e->{
-            setVisible(false);
-            dispose();
-        });
-        return cancelButton;
-    }
-
     private Object[][] getTableData(){
         java.util.List<Object[]> rows = new ArrayList<>();
 
-        for (String answer : intentAnswers) {
-            rows.add(new Object[]{answer});
+        for (IntentAnswer answer : intentAnswerList.getAnswers()) {
+            rows.add(new Object[]{answer.getText()});
         }
         return rows.toArray(new Object[0][0]);
     }
-    public ArrayList<String> getIntentAnswers() {
-        return intentAnswers;
-    }
+
 
     private void updateTable(){
         tableModel.setDataVector(getTableData(), columnNames);
@@ -176,8 +166,8 @@ public class AnswersDialog extends JDialog {
     private JButton editSave(){
         JButton editSave = new JButton("Save");
         editSave.addActionListener(e -> {
-            intentAnswers.remove(getSelectedRow());
-            intentAnswers.add(getSelectedRow(), editTextField.getText());
+            intentAnswerList.getAnswers().remove(getSelectedRow());
+            intentAnswerList.getAnswers().add(new IntentAnswer());
             editTextField.setText("");
             table.setEnabled(true);
             updateTable();

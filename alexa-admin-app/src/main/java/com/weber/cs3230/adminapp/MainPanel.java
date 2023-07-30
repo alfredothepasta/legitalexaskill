@@ -3,6 +3,8 @@ package com.weber.cs3230.adminapp;
 import com.weber.cs3230.adminapp.dataItems.AnswerDummyData;
 import com.weber.cs3230.adminapp.dialogs.AddEditDialog;
 import com.weber.cs3230.adminapp.dialogs.AnswersDialog;
+import com.weber.cs3230.adminapp.dto.IntentAnswer;
+import com.weber.cs3230.adminapp.dto.IntentAnswerList;
 import com.weber.cs3230.adminapp.dto.IntentDetail;
 import com.weber.cs3230.adminapp.dto.IntentDetailList;
 
@@ -11,6 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class MainPanel extends JPanel {
 
@@ -179,24 +182,42 @@ public class MainPanel extends JPanel {
         JButton editAnswers = new JButton("Edit Answers");
 
 
+
+
         editAnswers.addActionListener(e -> {
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             // pass in the answers and the selected row intent name
+
             resetTimeToLockout();
             int row = table.getSelectedRow();
             String intentName = intentDetailList.getIntents().get(row).getName();
 
+            SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+                @Override
+                protected IntentAnswerList doInBackground() throws Exception {
+                    IntentAnswerList answerList = applicationController.makeApiCall().getAnswers(
+                            intentDetailList.getIntents().get(row).getIntentID()
+                    );
+                    return answerList;
+                }
 
-            AnswersDialog answersDialog = new AnswersDialog(intentName, answers, applicationController);
-            answersDialog.setVisible(true);
+                @Override
+                protected void done() {
+                    try {
+                        IntentAnswerList answerList = (IntentAnswerList) get();
+                        AnswersDialog answersDialog = new AnswersDialog(intentName, answerList, applicationController);
+                        answersDialog.setVisible(true);
+                    } catch (Exception e) {
+                        //todo something about failure
+                    }
+                    setCursor(Cursor.getDefaultCursor());
+                }
+            };
 
-            // get the array list from the answers dialog and put the new updated one into the map
-            if(answersDialog.isSaveClicked()) {
-                //
-
-                answers.put(intentName, answersDialog.getIntentAnswers());
-            }
+            worker.execute();
 
         });
+
         return  editAnswers;
     }
 

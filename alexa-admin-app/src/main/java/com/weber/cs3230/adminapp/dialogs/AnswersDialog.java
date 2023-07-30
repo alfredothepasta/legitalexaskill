@@ -3,20 +3,17 @@ package com.weber.cs3230.adminapp.dialogs;
 import com.weber.cs3230.adminapp.ApplicationController;
 import com.weber.cs3230.adminapp.dto.IntentAnswer;
 import com.weber.cs3230.adminapp.dto.IntentAnswerList;
-import com.weber.cs3230.adminapp.dto.IntentDetailList;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Map;
 
 // well that was a nightmare to make. I'm sorry you have to try to read this.
 // Everything works now and I honestly have no idea how it works and I wrote it.
 public class AnswersDialog extends JDialog {
 
 
-//    private final ArrayList<String> intentAnswers;
 
     private IntentAnswerList intentAnswerList;
     private final String currentIntent;
@@ -75,7 +72,6 @@ public class AnswersDialog extends JDialog {
     }
 
     private void createStandardButtonPanel(){
-//        buttonPanel = new JPanel(new GridLayout(1, 5));
         buttonPanel.removeAll();
         buttonPanel.add(addButton());
         buttonPanel.add(editButton());
@@ -85,7 +81,6 @@ public class AnswersDialog extends JDialog {
     }
 
     private void createEditButtonPanel(){
-//        buttonPanel = new JPanel(new GridLayout(1, 5));
         buttonPanel.removeAll();
         buttonPanel.add(editSave());
         buttonPanel.add(editCancel());
@@ -95,6 +90,8 @@ public class AnswersDialog extends JDialog {
     private JButton addButton(){
         JButton addButton = new JButton("Add");
         addButton.addActionListener(e -> {
+            applicationController.resetTimeToLockout();
+
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             if(!editTextField.getText().trim().equals("")) {
                 SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
@@ -117,9 +114,6 @@ public class AnswersDialog extends JDialog {
                 };
 
                 worker.execute();
-//                intentAnswerList.getAnswers().add(editTextField.getText());
-//                editTextField.setText("");
-//                updateTable();
             }
         });
 
@@ -127,11 +121,11 @@ public class AnswersDialog extends JDialog {
     }
 
     private JButton closeButton() {
+        applicationController.resetTimeToLockout();
+
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(e -> {
 
-            // update the array of answers
-//            saveClicked = true;
 
             setVisible(false);
             dispose();
@@ -141,6 +135,8 @@ public class AnswersDialog extends JDialog {
 
 
     private JButton editButton(){
+        applicationController.resetTimeToLockout();
+
         JButton editButton = new JButton("Edit");
         editButton.addActionListener(e -> {
 
@@ -157,6 +153,8 @@ public class AnswersDialog extends JDialog {
     }
 
     private JButton deleteButton(){
+        applicationController.resetTimeToLockout();
+
         JButton deleteButton = new JButton("Delete");
 
         deleteButton.addActionListener(e -> {
@@ -222,6 +220,8 @@ public class AnswersDialog extends JDialog {
     private JButton editSave(){
         JButton editSave = new JButton("Save");
         editSave.addActionListener(e -> {
+            applicationController.resetTimeToLockout();
+
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
             SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
@@ -250,6 +250,8 @@ public class AnswersDialog extends JDialog {
     }
 
     private JButton editCancel(){
+        applicationController.resetTimeToLockout();
+
         JButton editCancel = new JButton("Cancel");
         editCancel.addActionListener(e->{
             editTextField.setText("");

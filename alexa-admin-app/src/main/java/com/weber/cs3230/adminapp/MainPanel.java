@@ -11,7 +11,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 public class MainPanel extends JPanel {
 
@@ -65,7 +64,7 @@ public class MainPanel extends JPanel {
         JPanel buttonPanel = new JPanel(new GridLayout(1, 4));
         buttonPanel.add(addIntent());
         buttonPanel.add(editRow());
-        buttonPanel.add(deleteRow());
+        buttonPanel.add(deleteIntent());
         buttonPanel.add(editAnswers());
         return buttonPanel;
 
@@ -95,7 +94,7 @@ public class MainPanel extends JPanel {
 
                         @Override
                         protected void done(){
-                            updateTable();
+//                            updateTable();
                             setCursor(Cursor.getDefaultCursor());
                         }
                     };
@@ -129,14 +128,32 @@ public class MainPanel extends JPanel {
         return button;
     }
 
-    private JButton deleteRow(){
-        JButton deleteButton = new JButton("Delete Row");
+    private JButton deleteIntent(){
+        JButton deleteButton = new JButton("Delete Intent");
         deleteButton.addActionListener(e -> {
             resetTimeToLockout();
-            // todo: in a perfect universe where this is going to production, wrap in try/catch
             int row = table.getSelectedRow();
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+            SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+                @Override
+                protected Object doInBackground() throws Exception {
+                    applicationController.makeApiCall().deleteIntent(intentDetailList.getIntents().get(row).getIntentID());
+                    return null;
+                }
+                @Override
+                protected void done(){
+                    updateTableData();
+                    setCursor(Cursor.getDefaultCursor());
+//                    updateTable();
+                }
+            };
+
+            worker.execute();
+
+            // todo: in a perfect universe where this is going to production, wrap in try/catch
+
 //            intentTableItems.remove(row);
-            updateTable();
         });
         return  deleteButton;
     }
@@ -182,7 +199,7 @@ public class MainPanel extends JPanel {
     }
 
     private void updateTableData(){
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
         SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
 
             @Override
@@ -194,19 +211,15 @@ public class MainPanel extends JPanel {
             protected void done(){
                 try {
                     intentDetailList = (IntentDetailList) get();
+                    tableModel.setDataVector(getTableData(), columnNames);
                 } catch (Exception e){
                     // todo: Inform the user tat we failed
                 }
 
-                setCursor(Cursor.getDefaultCursor());
             }
         };
 
         worker.execute();
-
-
-
-
     }
 
 }

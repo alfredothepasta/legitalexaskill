@@ -47,17 +47,7 @@ public class MainFrame extends JFrame {
 
             }
         };
-
         worker.execute();
-
-
-
-//        mainFrame = new JFrame();
-//        mainFrame.setPreferredSize(new Dimension(500, 700));//200=width, 300=height
-//        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        mainFrame.add(new MainPanel(applicationController)); //add JPanel
-//        mainFrame.pack();
-//        mainFrame.setVisible(true); //hangs here
     }
 
     public void die(){

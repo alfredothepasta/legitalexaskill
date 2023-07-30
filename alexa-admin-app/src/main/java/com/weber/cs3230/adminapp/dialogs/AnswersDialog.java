@@ -27,7 +27,7 @@ public class AnswersDialog extends JDialog {
 
     private final String[] columnNames = {"Answer"};
 
-    private ApplicationController applicationController;
+    private final ApplicationController applicationController;
 
 
     public AnswersDialog(String currentIntent, Map<String, ArrayList<String>> answerMap, ApplicationController applicationController){

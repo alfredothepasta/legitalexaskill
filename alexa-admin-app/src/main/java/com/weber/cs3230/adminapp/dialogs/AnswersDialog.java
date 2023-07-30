@@ -3,6 +3,7 @@ package com.weber.cs3230.adminapp.dialogs;
 import com.weber.cs3230.adminapp.ApplicationController;
 import com.weber.cs3230.adminapp.dto.IntentAnswer;
 import com.weber.cs3230.adminapp.dto.IntentAnswerList;
+import com.weber.cs3230.adminapp.dto.IntentDetailList;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -17,14 +18,14 @@ public class AnswersDialog extends JDialog {
 
 //    private final ArrayList<String> intentAnswers;
 
-    private final IntentAnswerList intentAnswerList;
+    private IntentAnswerList intentAnswerList;
     private final String currentIntent;
+
+    private final long intentID;
 
     private JTable table;
     private DefaultTableModel tableModel;
 
-
-    private boolean saveClicked = false;
     private JComponent buttonPanel = buttonPanel = new JPanel(new GridLayout(1, 5));;
 
     private JTextField editTextField;
@@ -34,8 +35,9 @@ public class AnswersDialog extends JDialog {
     private final ApplicationController applicationController;
 
 
-    public AnswersDialog(String currentIntent, IntentAnswerList intentAnswerList, ApplicationController applicationController){
+    public AnswersDialog(String currentIntent, long intentID, IntentAnswerList intentAnswerList, ApplicationController applicationController){
         this.currentIntent = currentIntent;
+        this.intentID = intentID;
         this.applicationController = applicationController;
         this.intentAnswerList = intentAnswerList;
         setPreferredSize(new Dimension(700,  200));
@@ -93,7 +95,28 @@ public class AnswersDialog extends JDialog {
     private JButton addButton(){
         JButton addButton = new JButton("Add");
         addButton.addActionListener(e -> {
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             if(!editTextField.getText().trim().equals("")) {
+                SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+                    @Override
+                    protected Object doInBackground() throws Exception {
+                        // add a new answer
+                        applicationController.makeApiCall().saveNewAnswer(intentID, editTextField.getText());
+
+                        return null;
+                    }
+
+                    @Override
+                    protected void done() {
+                        super.done();
+                        // todo do update table things
+                        editTextField.setText("");
+                        updateTable();
+                        setCursor(Cursor.getDefaultCursor());
+                    }
+                };
+
+                worker.execute();
 //                intentAnswerList.getAnswers().add(editTextField.getText());
 //                editTextField.setText("");
 //                updateTable();
@@ -157,10 +180,27 @@ public class AnswersDialog extends JDialog {
 
 
     private void updateTable(){
-        tableModel.setDataVector(getTableData(), columnNames);
-    }
-    public boolean isSaveClicked() {
-        return saveClicked;
+        SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+
+            @Override
+            protected IntentAnswerList doInBackground() throws Exception {
+                return applicationController.makeApiCall().getAnswers(intentID);
+            }
+
+            @Override
+            protected void done(){
+                try {
+                    intentAnswerList = (IntentAnswerList) get();
+                    tableModel.setDataVector(getTableData(), columnNames);
+                } catch (Exception e){
+                    // todo: Inform the user that a network error occurred
+                }
+
+            }
+        };
+
+        worker.execute();
+
     }
 
     private JButton editSave(){

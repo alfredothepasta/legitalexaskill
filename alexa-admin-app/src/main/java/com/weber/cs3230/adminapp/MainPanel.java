@@ -191,6 +191,7 @@ public class MainPanel extends JPanel {
             resetTimeToLockout();
             int row = table.getSelectedRow();
             String intentName = intentDetailList.getIntents().get(row).getName();
+            long intentID = intentDetailList.getIntents().get(row).getIntentID();
 
             SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
                 @Override
@@ -205,7 +206,7 @@ public class MainPanel extends JPanel {
                 protected void done() {
                     try {
                         IntentAnswerList answerList = (IntentAnswerList) get();
-                        AnswersDialog answersDialog = new AnswersDialog(intentName, answerList, applicationController);
+                        AnswersDialog answersDialog = new AnswersDialog(intentName, intentID, answerList, applicationController);
                         answersDialog.setVisible(true);
                     } catch (Exception e) {
                         //todo something about failure

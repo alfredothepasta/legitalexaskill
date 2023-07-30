@@ -86,13 +86,17 @@ public class MainPanel extends JPanel {
                     SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
                         @Override
                         protected Object doInBackground() throws Exception {
-                            applicationController.makeApiCall().saveNewIntent(enteredIntent);
-                            updateTableData();
+                            try {
+                                applicationController.makeApiCall().saveNewIntent(enteredIntent);
+                            } catch (Exception e) {
+                                System.out.println(e.getMessage());
+                            }
                             return null;
                         }
 
                         @Override
                         protected void done(){
+                            updateTableData();
                             setCursor(Cursor.getDefaultCursor());
                         }
                     };
@@ -199,7 +203,7 @@ public class MainPanel extends JPanel {
                         answersDialog.setVisible(true);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
-                        JOptionPane.showMessageDialog(MainPanel.this, "A Network Error Occurred.", "Warning", JOptionPane.WARNING_MESSAGE);
+
 
                     }
                     setCursor(Cursor.getDefaultCursor());

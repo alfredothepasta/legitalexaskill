@@ -4,6 +4,8 @@ import com.weber.cs3230.adminapp.dataItems.AnswerDummyData;
 import com.weber.cs3230.adminapp.dataItems.IntentTableItem;
 import com.weber.cs3230.adminapp.dialogs.AddEditDialog;
 import com.weber.cs3230.adminapp.dialogs.AnswersDialog;
+import com.weber.cs3230.adminapp.dto.IntentDetail;
+import com.weber.cs3230.adminapp.dto.IntentDetailList;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -11,10 +13,11 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 public class MainPanel extends JPanel {
 
-    private final java.util.List<IntentTableItem> intentItems = new ArrayList<>();
+    private final java.util.List<IntentTableItem> intentTableItems = new ArrayList<>();
     DefaultTableModel tableModel;
     String[] columnNames = {"Intent", "Date Added"};
     JTable table;
@@ -38,16 +41,7 @@ public class MainPanel extends JPanel {
 
     private JComponent createTablePanel() {
 
-        intentItems.add(new IntentTableItem( "largest_whale_species", "7-9-2023"));
-        intentItems.add(new IntentTableItem( "whale_communication", "7-9-2023"));
-        intentItems.add(new IntentTableItem( "known_for_displays", "7-9-2023"));
-        intentItems.add(new IntentTableItem( "blue_whale_diet", "7-9-2023"));
-        intentItems.add(new IntentTableItem( "toothed_vs_baleen", "7-9-2023"));
-        intentItems.add(new IntentTableItem( "humpback_song_length", "7-9-2023"));
-        intentItems.add(new IntentTableItem( "purpose_of_blowhole", "7-9-2023"));
-        intentItems.add(new IntentTableItem( "how_they_migrate", "7-9-2023"));
-        intentItems.add(new IntentTableItem( "average_whale_lifespan", "7-9-2023"));
-        intentItems.add(new IntentTableItem( "how_whales_use_echolocation", "7-9-2023"));
+        buildTable();
 
         tableModel = new DefaultTableModel(getTableData(), columnNames);
         table = new JTable(tableModel);
@@ -60,7 +54,7 @@ public class MainPanel extends JPanel {
     private Object[][] getTableData(){
         java.util.List<Object[]> rows = new ArrayList<>();
 
-        for (IntentTableItem tableItem : intentItems) {
+        for (IntentTableItem tableItem : intentTableItems) {
             rows.add(new Object[]{tableItem.getIntentName(), tableItem.getDateAdded()});
         }
 
@@ -90,7 +84,8 @@ public class MainPanel extends JPanel {
             if(addDialog.isSaveClicked()){
                 String enteredIntent = addDialog.getIntentNameEntered().trim();
                 if(!intentListContains(enteredIntent)) {
-                    intentItems.add(new IntentTableItem(enteredIntent, new Date().toString()));
+                    /*intentTableItems.add(new IntentTableItem(enteredIntent, new Date().toString()));*/
+                    // todo : make a thing that adds to the thing
                     updateTable();
                 } else {
                     JOptionPane.showMessageDialog(this, "Intent Already Exists.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -105,14 +100,14 @@ public class MainPanel extends JPanel {
         button.addActionListener(e -> {
             resetTimeToLockout();
             int row = table.getSelectedRow();
-            String intentName = intentItems.get(row).getIntentName();
+            String intentName = intentTableItems.get(row).getIntentName();
 
             AddEditDialog editDialog = new AddEditDialog(false, intentName, applicationController);
             editDialog.setVisible(true);
 
             if(editDialog.isSaveClicked()){
                 String enteredIntent = editDialog.getIntentNameEntered();
-                intentItems.set(row, new IntentTableItem(enteredIntent, new Date().toString()));
+//                intentTableItems.set(row, new IntentTableItem(enteredIntent, new Date().toString()));
                 updateTable();
             }
         });
@@ -126,7 +121,7 @@ public class MainPanel extends JPanel {
             resetTimeToLockout();
             // todo: in a perfect universe where this is going to production, wrap in try/catch
             int row = table.getSelectedRow();
-            intentItems.remove(row);
+            intentTableItems.remove(row);
             updateTable();
         });
         return  deleteButton;
@@ -140,7 +135,7 @@ public class MainPanel extends JPanel {
             // pass in the answers and the selected row intent name
             resetTimeToLockout();
             int row = table.getSelectedRow();
-            String intentName = intentItems.get(row).getIntentName();
+            String intentName = intentTableItems.get(row).getIntentName();
 
 
             AnswersDialog answersDialog = new AnswersDialog(intentName, answers, applicationController);
@@ -156,7 +151,7 @@ public class MainPanel extends JPanel {
     }
 
     private boolean intentListContains(String intent){
-        for (IntentTableItem item: intentItems) {
+        for (IntentTableItem item: intentTableItems) {
             if (intent.equals(item.getIntentName())) {
                 return true;
             }
@@ -170,6 +165,40 @@ public class MainPanel extends JPanel {
 
     private void resetTimeToLockout(){
         applicationController.setStartTime(System.currentTimeMillis());
+    }
+
+    private void buildTable(){
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+
+            @Override
+            protected IntentDetailList doInBackground() throws Exception {
+                return applicationController.makeApiCall().getIntents();
+            }
+
+            @Override
+            protected void done(){
+                try {
+                    IntentDetailList list = (IntentDetailList) get();
+                    for (IntentDetail intent : list.getIntents())
+                    {
+                        MainPanel.this.intentTableItems.add(new IntentTableItem(intent.getIntentID(), intent.getName(), intent.getDateAdded()));
+                    }
+                    updateTable();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+                setCursor(Cursor.getDefaultCursor());
+            }
+        };
+
+        worker.execute();
+
+
+
+
     }
 
 }

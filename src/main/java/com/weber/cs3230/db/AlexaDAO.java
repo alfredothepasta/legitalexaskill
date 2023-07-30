@@ -24,7 +24,7 @@ public class AlexaDAO {
     @Value("${db.password}") private String dbPassword;
 
     public AlexaDAO() {
-        this.alexaAppID = "yourPersonalAlexaAppID"; //TODO set this back to what it was
+        this.alexaAppID = "cs32302"; //TODO set this back to what it was
     }
 
     public List<String> getAnswersForIntent(String intentName) {

@@ -30,4 +30,8 @@ public class MainFrame extends JFrame {
         mainFrame.setVisible(true); //hangs here
     }
 
+    public void die(){
+        mainFrame.dispose();
+    }
+
 }

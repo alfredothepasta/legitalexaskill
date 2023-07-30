@@ -12,6 +12,8 @@ public class ApplicationController {
 
     private final MainFrame mainFrame;
 
+
+
     private volatile Long startTime = System.currentTimeMillis();
     public ApplicationController(MainFrame mainFrame) {
         this.apiClient = new ApiClient();
@@ -47,13 +49,13 @@ public class ApplicationController {
     public void logout(){
         // If I understood this better, we'd also close all dialogs.
         SwingUtilities.invokeLater(()->{
-            mainFrame.dispose();
+            mainFrame.die();
             JOptionPane.showMessageDialog(null, "Please log in again.", "Timeout", JOptionPane.WARNING_MESSAGE);
             login();
         });
     }
 
-    public ApiClient getApiClient() {
+    public ApiClient makeApiCall() {
         return apiClient;
     }
 }

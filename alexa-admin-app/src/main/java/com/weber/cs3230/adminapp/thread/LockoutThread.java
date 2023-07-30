@@ -6,8 +6,8 @@ import com.weber.cs3230.adminapp.MainFrame;
 
 public class LockoutThread extends Thread{
 
-    private final long threadSleepTime = 1_000;
-    private final long lockoutTime = 10_000;
+    private final long threadSleepTime = 30_000;
+    private final long lockoutTime = 600_000;
 
     private ApplicationController applicationController;
 

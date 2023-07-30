@@ -3,10 +3,13 @@ package com.weber.cs3230.adminapp.dataItems;
 public class IntentTableItem {
     private String intentName;
     private String dateAdded;
+    private long intentID;
 
-    public IntentTableItem(String intentName, String dateAdded) {
+
+    public IntentTableItem(long intentID, String intentName, String dateAdded) {
         this.intentName = intentName;
         this.dateAdded = dateAdded;
+        this.intentID = intentID;
     }
 
     public String getIntentName() {

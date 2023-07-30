@@ -47,13 +47,36 @@ public class LoginDialog extends JDialog {
     private JButton loginButton() {
         JButton loginButton = new JButton("Login");
         loginButton.addActionListener(e -> {
-            if(usernameTextField.getText().equals("") && passwordTextField.getText().equals("")){
-                isLoggedIn = true;
-                setVisible(false);
-            } else {
-                JOptionPane.showMessageDialog(this, "Login not recognized.", "Warning", JOptionPane.WARNING_MESSAGE);
-            }
+
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+
+                boolean loginCheck = false;
+
+                @Override
+                protected Object doInBackground() throws Exception {
+                    loginCheck = applicationController.makeApiCall().validateCreds(usernameTextField.getText(), new String(passwordTextField.getPassword()));
+                    return null;
+                }
+
+                @Override
+                protected void done(){
+                    setCursor(Cursor.getDefaultCursor());
+                    if(loginCheck){
+                        isLoggedIn = true;
+                        setVisible(false);
+                    } else {
+                        JOptionPane.showMessageDialog(LoginDialog.this, "Login not recognized.", "Warning", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+            };
+
+            worker.execute();
+
+
         });
+
+
         return loginButton;
     }
 

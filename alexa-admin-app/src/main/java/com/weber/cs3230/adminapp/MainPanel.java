@@ -24,9 +24,6 @@ public class MainPanel extends JPanel {
 
     private final ApplicationController applicationController;
 
-
-    private final Map<String, ArrayList<String>> answers = new AnswerDummyData().getAnswerList();
-
     public MainPanel(ApplicationController applicationController, IntentDetailList intentDetailList) {
         super(new BorderLayout());
         this.applicationController = applicationController;
@@ -76,7 +73,7 @@ public class MainPanel extends JPanel {
     private JButton addIntent(){
         JButton button = new JButton("Add Intent");
         button.addActionListener(e -> {
-            resetTimeToLockout();
+            applicationController.resetTimeToLockout();
 
             AddEditDialog addDialog = new AddEditDialog(true, applicationController);
             addDialog.setVisible(true);
@@ -84,8 +81,6 @@ public class MainPanel extends JPanel {
             if(addDialog.isSaveClicked()){
                 String enteredIntent = addDialog.getIntentNameEntered().trim();
                 if(!intentListContains(enteredIntent)) {
-                    /*intentTableItems.add(new IntentTableItem(enteredIntent, new Date().toString()));*/
-                    // todo : make a thing that adds to the thing
                     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
                         @Override
@@ -97,7 +92,6 @@ public class MainPanel extends JPanel {
 
                         @Override
                         protected void done(){
-//                            updateTable();
                             setCursor(Cursor.getDefaultCursor());
                         }
                     };
@@ -114,7 +108,7 @@ public class MainPanel extends JPanel {
         JButton button = new JButton("Edit Intent");
 
         button.addActionListener(e -> {
-            resetTimeToLockout();
+            applicationController.resetTimeToLockout();
             int row = table.getSelectedRow();
             String intentName = intentDetailList.getIntents().get(row).getName();
 
@@ -140,8 +134,6 @@ public class MainPanel extends JPanel {
                 };
 
                 worker.execute();
-//                intentTableItems.set(row, new IntentTableItem(enteredIntent, new Date().toString()));
-//                updateTable();
             }
         });
 
@@ -151,7 +143,7 @@ public class MainPanel extends JPanel {
     private JButton deleteIntent(){
         JButton deleteButton = new JButton("Delete Intent");
         deleteButton.addActionListener(e -> {
-            resetTimeToLockout();
+            applicationController.resetTimeToLockout();
             int row = table.getSelectedRow();
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
@@ -165,15 +157,11 @@ public class MainPanel extends JPanel {
                 protected void done(){
                     updateTableData();
                     setCursor(Cursor.getDefaultCursor());
-//                    updateTable();
                 }
             };
 
             worker.execute();
 
-            // todo: in a perfect universe where this is going to production, wrap in try/catch
-
-//            intentTableItems.remove(row);
         });
         return  deleteButton;
     }
@@ -188,7 +176,7 @@ public class MainPanel extends JPanel {
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             // pass in the answers and the selected row intent name
 
-            resetTimeToLockout();
+            applicationController.resetTimeToLockout();
             int row = table.getSelectedRow();
             String intentName = intentDetailList.getIntents().get(row).getName();
             long intentID = intentDetailList.getIntents().get(row).getIntentID();
@@ -231,13 +219,6 @@ public class MainPanel extends JPanel {
         return false;
     }
 
-    private void updateTable(){
-        tableModel.setDataVector(getTableData(), columnNames);
-    }
-
-    private void resetTimeToLockout(){
-        applicationController.setStartTime(System.currentTimeMillis());
-    }
 
     private void updateTableData(){
 

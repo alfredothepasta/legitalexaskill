@@ -58,4 +58,8 @@ public class ApplicationController {
     public ApiClient makeApiCall() {
         return apiClient;
     }
+
+    public void resetTimeToLockout(){
+        setStartTime(System.currentTimeMillis());
+    }
 }

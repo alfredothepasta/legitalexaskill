@@ -143,6 +143,7 @@ public class AnswersDialog extends JDialog {
     private JButton editButton(){
         JButton editButton = new JButton("Edit");
         editButton.addActionListener(e -> {
+
             // replace button panel with the edit button panel
             if(table.isColumnSelected(0)) {
                 getSelectedRow();
@@ -159,11 +160,26 @@ public class AnswersDialog extends JDialog {
         JButton deleteButton = new JButton("Delete");
 
         deleteButton.addActionListener(e -> {
-            // todo: in a perfect universe where this is going to production, wrap in try/catch
+
             int row = table.getSelectedRow();
-            // todo actually do this in the apiclient
-            intentAnswerList.getAnswers().remove(row);
-            updateTable();
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+            SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+                @Override
+                protected Object doInBackground() throws Exception {
+                    applicationController.makeApiCall().deleteAnswer(intentID, intentAnswerList.getAnswers().get(row).getAnswerID());
+                    return null;
+                }
+
+                @Override
+                protected void done() {
+                    super.done();
+                    updateTable();
+                    setCursor(Cursor.getDefaultCursor());
+                }
+            };
+            worker.execute();
+
         });
 
         return deleteButton;
@@ -206,12 +222,28 @@ public class AnswersDialog extends JDialog {
     private JButton editSave(){
         JButton editSave = new JButton("Save");
         editSave.addActionListener(e -> {
-            intentAnswerList.getAnswers().remove(getSelectedRow());
-            intentAnswerList.getAnswers().add(new IntentAnswer());
-            editTextField.setText("");
-            table.setEnabled(true);
-            updateTable();
-            createStandardButtonPanel();
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+            SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+                @Override
+                protected Object doInBackground() throws Exception {
+                    applicationController.makeApiCall().updateAnswer(intentID, intentAnswerList.getAnswers().get(getSelectedRow()).getAnswerID(), editTextField.getText());
+                    return null;
+                }
+
+                @Override
+                protected void done() {
+                    super.done();
+                    editTextField.setText("");
+                    table.setEnabled(true);
+                    updateTable();
+                    createStandardButtonPanel();
+                    setCursor(Cursor.getDefaultCursor());
+                }
+            };
+
+            worker.execute();
+
         });
 
         return editSave;

@@ -128,7 +128,9 @@ public class MainPanel extends JPanel {
                     @Override
                     protected Object doInBackground() throws Exception {
                         try {
-                            applicationController.makeApiCall().updateIntent(intentDetailList.getIntents().get(row).getIntentID(), enteredIntent);
+                            applicationController.makeApiCall().updateIntent(
+                                    intentDetailList.getIntents().get(row).getIntentID(),
+                                    enteredIntent);
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }

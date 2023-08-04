@@ -85,19 +85,21 @@ public class MainPanel extends JPanel {
                     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
                         @Override
-                        protected Object doInBackground() throws Exception {
-                            try {
-                                applicationController.makeApiCall().saveNewIntent(enteredIntent);
-                            } catch (Exception e) {
-                                System.out.println(e.getMessage());
-                            }
-                            return null;
+                        protected Boolean doInBackground() throws Exception {
+                            applicationController.makeApiCall().saveNewIntent(enteredIntent);
+
+                            return true;
                         }
 
                         @Override
                         protected void done(){
-                            updateTableData();
+                            try {
+                                get();
+                            } catch (Exception e) {
+                                JOptionPane.showMessageDialog(MainPanel.this, "Something went wrong: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                            }
                             setCursor(Cursor.getDefaultCursor());
+                            updateTableData();
                         }
                     };
                     worker.execute();
@@ -139,8 +141,8 @@ public class MainPanel extends JPanel {
 
                     @Override
                     protected void done(){
-                        updateTableData();
                         setCursor(Cursor.getDefaultCursor());
+                        updateTableData();
                     }
                 };
 
@@ -172,8 +174,8 @@ public class MainPanel extends JPanel {
                 }
                 @Override
                 protected void done(){
-                    updateTableData();
                     setCursor(Cursor.getDefaultCursor());
+                    updateTableData();
                 }
             };
 
@@ -245,7 +247,7 @@ public class MainPanel extends JPanel {
 
 
     private void updateTableData(){
-
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
 
             @Override
@@ -270,9 +272,11 @@ public class MainPanel extends JPanel {
                     System.out.println(e.getMessage());
                     JOptionPane.showMessageDialog(MainPanel.this, "A Network Error Occurred.", "Warning", JOptionPane.WARNING_MESSAGE);
                 }
-
+                setCursor(Cursor.getDefaultCursor());
             }
         };
+
+
 
         worker.execute();
     }

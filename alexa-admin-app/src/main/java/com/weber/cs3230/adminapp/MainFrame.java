@@ -24,6 +24,7 @@ public class MainFrame extends JFrame {
     }
 
     public void loginSuccessfulInitMainFrame(){
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
             @Override
             protected IntentDetailList doInBackground() throws Exception {

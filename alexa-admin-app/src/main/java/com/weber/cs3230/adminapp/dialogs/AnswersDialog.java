@@ -95,23 +95,25 @@ public class AnswersDialog extends JDialog {
 
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             if(!editTextField.getText().trim().equals("")) {
-                SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+                SwingWorker<Boolean, Object> worker = new SwingWorker<>() {
                     @Override
-                    protected Object doInBackground() throws Exception {
-                        // add a new answer
-                        try {
-                            applicationController.makeApiCall().saveNewAnswer(intentID, editTextField.getText());
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
-                        }
+                    protected Boolean doInBackground() throws Exception {
+                        applicationController.makeApiCall().saveNewAnswer(intentID, editTextField.getText());
 
-                        return null;
+                        return true;
                     }
 
                     @Override
                     protected void done() {
-                        super.done();
-                        // todo do update table things
+                        try {
+                            if(!get()){
+                                JOptionPane.showMessageDialog(AnswersDialog.this, "Abandon Hope All Ye Who Enter Here", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                            JOptionPane.showMessageDialog(AnswersDialog.this, "Something went wrong: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+
                         editTextField.setText("");
                         updateTable();
                         setCursor(Cursor.getDefaultCursor());
@@ -130,8 +132,6 @@ public class AnswersDialog extends JDialog {
 
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(e -> {
-
-
             setVisible(false);
             dispose();
         });
@@ -167,20 +167,26 @@ public class AnswersDialog extends JDialog {
             int row = table.getSelectedRow();
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-            SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+            SwingWorker<Boolean, Object> worker = new SwingWorker<>() {
                 @Override
-                protected Object doInBackground() throws Exception {
-                    try {
-                        applicationController.makeApiCall().deleteAnswer(intentID, intentAnswerList.getAnswers().get(row).getAnswerID());
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                    return null;
+                protected Boolean doInBackground() throws Exception {
+                    applicationController.makeApiCall().deleteAnswer(intentID, intentAnswerList.getAnswers().get(row).getAnswerID());
+
+                    return true;
                 }
 
                 @Override
                 protected void done() {
-                    super.done();
+                    try {
+                        if(!get()){
+                            JOptionPane.showMessageDialog(AnswersDialog.this, "Abandon Hope All Ye Who Enter Here", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                        JOptionPane.showMessageDialog(AnswersDialog.this, "Something went wrong: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+
+
                     updateTable();
                     setCursor(Cursor.getDefaultCursor());
                 }
@@ -203,7 +209,7 @@ public class AnswersDialog extends JDialog {
 
 
     private void updateTable(){
-        SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+        SwingWorker<IntentAnswerList, Object> worker = new SwingWorker<>() {
 
             @Override
             protected IntentAnswerList doInBackground() throws Exception {
@@ -213,7 +219,7 @@ public class AnswersDialog extends JDialog {
             @Override
             protected void done(){
                 try {
-                    intentAnswerList = (IntentAnswerList) get();
+                    intentAnswerList = get();
                     tableModel.setDataVector(getTableData(), columnNames);
                 } catch (Exception e){
                     System.out.println(e.getMessage());
@@ -234,19 +240,24 @@ public class AnswersDialog extends JDialog {
 
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-            SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+            SwingWorker<Boolean, Object> worker = new SwingWorker<>() {
                 @Override
-                protected Object doInBackground() throws Exception {
-                    try {
-                        applicationController.makeApiCall().updateAnswer(intentID, intentAnswerList.getAnswers().get(getSelectedRow()).getAnswerID(), editTextField.getText());
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                    return null;
+                protected Boolean doInBackground() throws Exception {
+                    applicationController.makeApiCall().updateAnswer(intentID, intentAnswerList.getAnswers().get(getSelectedRow()).getAnswerID(), editTextField.getText());
+                    return true;
                 }
 
                 @Override
                 protected void done() {
+                    try {
+                        if(!get()){
+                            JOptionPane.showMessageDialog(AnswersDialog.this, "Abandon Hope All Ye Who Enter Here", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (Exception e){
+                        System.out.println(e.getMessage());
+                        JOptionPane.showMessageDialog(AnswersDialog.this, "Something went wrong: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+
                     super.done();
                     editTextField.setText("");
                     table.setEnabled(true);

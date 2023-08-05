@@ -39,8 +39,6 @@ public class MainPanel extends JPanel {
     }
 
     private JComponent createTablePanel() {
-//        JScrollPane scrollPane = new JScrollPane();
-
         tableModel = new DefaultTableModel(getTableData(), columnNames);
         table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -83,7 +81,7 @@ public class MainPanel extends JPanel {
                 String enteredIntent = addDialog.getIntentNameEntered().trim();
                 if(!intentListContains(enteredIntent)) {
                     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                    SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+                    SwingWorker<Boolean, Object> worker = new SwingWorker<>() {
                         @Override
                         protected Boolean doInBackground() throws Exception {
                             applicationController.makeApiCall().saveNewIntent(enteredIntent);
@@ -94,7 +92,9 @@ public class MainPanel extends JPanel {
                         @Override
                         protected void done(){
                             try {
-                                get();
+                                if(!get()){
+                                    JOptionPane.showMessageDialog(MainPanel.this, "Abandon Hope All Ye Who Enter Here", "Error", JOptionPane.ERROR_MESSAGE);
+                                }
                             } catch (Exception e) {
                                 JOptionPane.showMessageDialog(MainPanel.this, "Something went wrong: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                             }
@@ -126,21 +126,28 @@ public class MainPanel extends JPanel {
                 String enteredIntent = editDialog.getIntentNameEntered();
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-                SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+                SwingWorker<Boolean, Object> worker = new SwingWorker<>() {
                     @Override
-                    protected Object doInBackground() throws Exception {
-                        try {
-                            applicationController.makeApiCall().updateIntent(
-                                    intentDetailList.getIntents().get(row).getIntentID(),
-                                    enteredIntent);
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
-                        }
-                        return null;
+                    protected Boolean doInBackground() throws Exception {
+                        applicationController.makeApiCall().updateIntent(
+                                intentDetailList.getIntents().get(row).getIntentID(),
+                                enteredIntent);
+
+                        return true;
                     }
 
                     @Override
                     protected void done(){
+                        try {
+                            if(!get()){
+                                JOptionPane.showMessageDialog(MainPanel.this, "Abandon Hope All Ye Who Enter Here", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        } catch (Exception e){
+                            JOptionPane.showMessageDialog(MainPanel.this, "Something went wrong: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+                        }
+
+
                         setCursor(Cursor.getDefaultCursor());
                         updateTableData();
                     }
@@ -160,20 +167,27 @@ public class MainPanel extends JPanel {
             int row = table.getSelectedRow();
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-            SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+            SwingWorker<Boolean, Object> worker = new SwingWorker<>() {
                 @Override
-                protected Object doInBackground() throws Exception {
-                    boolean successful = true;
-                    try {
-                        applicationController.makeApiCall().deleteIntent(intentDetailList.getIntents().get(row).getIntentID());
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                        successful = false;
-                    }
-                    return successful;
+                protected Boolean doInBackground() throws Exception {
+                    applicationController.makeApiCall().deleteIntent(intentDetailList.getIntents().get(row).getIntentID());
+                    return true;
                 }
+
+                private void handleError() {
+
+                }
+
                 @Override
                 protected void done(){
+                    try {
+                        if(get()){
+                            JOptionPane.showMessageDialog(MainPanel.this, "Abandon Hope All Ye Who Enter Here", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (Exception e){
+                        System.out.println(e.getMessage());
+                        JOptionPane.showMessageDialog(MainPanel.this, "Something went wrong: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                     setCursor(Cursor.getDefaultCursor());
                     updateTableData();
                 }
@@ -200,29 +214,25 @@ public class MainPanel extends JPanel {
             String intentName = intentDetailList.getIntents().get(row).getName();
             long intentID = intentDetailList.getIntents().get(row).getIntentID();
 
-            SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+            SwingWorker<IntentAnswerList, Object> worker = new SwingWorker<>() {
                 @Override
                 protected IntentAnswerList doInBackground() throws Exception {
-                    IntentAnswerList answerList = null;
-                    try {
-                        answerList = applicationController.makeApiCall().getAnswers(
+                    IntentAnswerList answerList = applicationController.makeApiCall().getAnswers(
                                 intentDetailList.getIntents().get(row).getIntentID()
-                        );
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
+                    );
+
                     return answerList;
                 }
 
                 @Override
                 protected void done() {
                     try {
-                        IntentAnswerList answerList = (IntentAnswerList) get();
+                        IntentAnswerList answerList = get();
                         AnswersDialog answersDialog = new AnswersDialog(intentName, intentID, answerList, applicationController);
                         answersDialog.setVisible(true);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
-
+                        JOptionPane.showMessageDialog(MainPanel.this, "Something went wrong: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
                     }
                     setCursor(Cursor.getDefaultCursor());
@@ -248,7 +258,7 @@ public class MainPanel extends JPanel {
 
     private void updateTableData(){
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        SwingWorker<Object, Object> worker = new SwingWorker<Object, Object>() {
+        SwingWorker<IntentDetailList, Object> worker = new SwingWorker<>() {
 
             @Override
             protected IntentDetailList doInBackground() throws Exception {
@@ -266,7 +276,7 @@ public class MainPanel extends JPanel {
             @Override
             protected void done(){
                 try {
-                    intentDetailList = (IntentDetailList) get();
+                    intentDetailList = get();
                     tableModel.setDataVector(getTableData(), columnNames);
                 } catch (Exception e){
                     System.out.println(e.getMessage());

@@ -1,7 +1,6 @@
 package com.weber.cs3230.adminapp.dialogs;
 
 import com.weber.cs3230.adminapp.ApplicationController;
-import com.weber.cs3230.adminapp.MainPanel;
 import com.weber.cs3230.adminapp.dto.IntentAnswer;
 import com.weber.cs3230.adminapp.dto.IntentAnswerList;
 
@@ -67,8 +66,6 @@ public class AnswersDialog extends JDialog {
         panel.add(editTextField, BorderLayout.CENTER);
         createStandardButtonPanel();
         panel.add(buttonPanel, BorderLayout.SOUTH);
-
-
         return panel;
     }
 
@@ -209,7 +206,11 @@ public class AnswersDialog extends JDialog {
 
 
     private void updateTable(){
+
+        setCursor(Cursor.getDefaultCursor());
         SwingWorker<IntentAnswerList, Object> worker = new SwingWorker<>() {
+
+
 
             @Override
             protected IntentAnswerList doInBackground() throws Exception {
@@ -225,6 +226,7 @@ public class AnswersDialog extends JDialog {
                     System.out.println(e.getMessage());
                     JOptionPane.showMessageDialog(AnswersDialog.this, "A Network Error Occurred.", "Warning", JOptionPane.WARNING_MESSAGE);
                 }
+                setCursor(Cursor.getDefaultCursor());
 
             }
         };

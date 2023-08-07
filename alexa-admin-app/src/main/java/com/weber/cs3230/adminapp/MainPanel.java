@@ -181,7 +181,7 @@ public class MainPanel extends JPanel {
                 @Override
                 protected void done(){
                     try {
-                        if(get()){
+                        if(!get()){
                             JOptionPane.showMessageDialog(MainPanel.this, "Abandon Hope All Ye Who Enter Here", "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     } catch (Exception e){

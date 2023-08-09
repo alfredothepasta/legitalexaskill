@@ -21,10 +21,9 @@ public class AlexaIntentHandler {
     private final List<String> intentDetailList;
 
     @Autowired
-    public AlexaIntentHandler(AnswerGenerator answerGenerator) {
+    public AlexaIntentHandler(AnswerGenerator answerGenerator, AlexaDAO alexaDAO) {
         this.answerGenerator = answerGenerator;
         intentDetailList = new ArrayList<>();
-        AlexaDAO alexaDAO = new AlexaDAO();
         for (IntentDetail i : alexaDAO.getIntentList().getIntents()) {
             intentDetailList.add(i.getName());
         }

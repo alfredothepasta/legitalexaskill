@@ -24,7 +24,7 @@ public class AlexaDAO {
     @Value("${db.password}") private String dbPassword;
 
     public AlexaDAO() {
-        this.alexaAppID = "cs32302  "; //TODO set this back to what it was
+        this.alexaAppID = "cs32302"; //TODO set this back to what it was
     }
 
     public List<String> getAnswersForIntent(String intentName) {
@@ -315,7 +315,7 @@ public class AlexaDAO {
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
 
-            statement.setString(1, "CamronsApp"); // Replace with your app name
+            statement.setString(1, "Whale Facts"); // Replace with your app name
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     final MetricDetail metric = new MetricDetail();

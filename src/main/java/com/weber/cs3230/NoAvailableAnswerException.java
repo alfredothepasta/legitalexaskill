@@ -1,13 +1,13 @@
 package com.weber.cs3230;
 
 public class NoAvailableAnswerException extends Exception {
-    private final AlexaIntent intent;
+    private final String intent;
 
-    public NoAvailableAnswerException(AlexaIntent intent) {
+    public NoAvailableAnswerException(String intent) {
         this.intent = intent;
     }
 
-    public AlexaIntent getIntent() {
+    public String getIntent() {
         return intent;
     }
 }

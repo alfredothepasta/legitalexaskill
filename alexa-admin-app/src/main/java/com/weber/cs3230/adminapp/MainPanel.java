@@ -4,10 +4,8 @@ import com.weber.cs3230.adminapp.dataItems.AnswerDummyData;
 import com.weber.cs3230.adminapp.dialogs.AddEditDialog;
 import com.weber.cs3230.adminapp.dialogs.AnswersDialog;
 import com.weber.cs3230.adminapp.dialogs.LoginDialog;
-import com.weber.cs3230.adminapp.dto.IntentAnswer;
-import com.weber.cs3230.adminapp.dto.IntentAnswerList;
-import com.weber.cs3230.adminapp.dto.IntentDetail;
-import com.weber.cs3230.adminapp.dto.IntentDetailList;
+import com.weber.cs3230.adminapp.dialogs.MetricDialog;
+import com.weber.cs3230.adminapp.dto.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -60,11 +58,12 @@ public class MainPanel extends JPanel {
     }
 
     private JPanel createButtonPanel (){
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 4));
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 5));
         buttonPanel.add(addIntent());
         buttonPanel.add(editIntent());
         buttonPanel.add(deleteIntent());
         buttonPanel.add(editAnswers());
+        buttonPanel.add(displayMetrics());
         return buttonPanel;
 
     }
@@ -246,6 +245,44 @@ public class MainPanel extends JPanel {
         return  editAnswers;
     }
 
+    private JButton displayMetrics(){
+        JButton displayMetrics = new JButton("Display Metrics");
+
+        displayMetrics.addActionListener(e ->{
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+            SwingWorker<MetricDetailList, Object> worker = new SwingWorker<MetricDetailList, Object>() {
+                @Override
+                protected MetricDetailList doInBackground() throws Exception {
+                    MetricDetailList metricDetailList = applicationController.makeApiCall().getMetrics();
+                    return metricDetailList;
+                }
+
+                @Override
+                protected void done(){
+                    try {
+                        MetricDetailList metricDetailList = get();
+                        MetricDialog metricDialog = new MetricDialog(metricDetailList, applicationController);
+                        metricDialog.setVisible(true);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                        JOptionPane.showMessageDialog(MainPanel.this, "Something went wrong: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+                    }
+                    setCursor(Cursor.getDefaultCursor());
+                }
+            };
+
+            worker.execute();
+        });
+
+
+
+
+
+        return displayMetrics;
+    }
+
     private boolean intentListContains(String intent){
         for (IntentDetail item: intentDetailList.getIntents()) {
             if (intent.equals(item.getName())) {
@@ -288,7 +325,10 @@ public class MainPanel extends JPanel {
 
 
 
+
         worker.execute();
     }
+
+
 
 }

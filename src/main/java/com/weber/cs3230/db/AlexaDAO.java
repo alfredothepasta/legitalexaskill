@@ -24,7 +24,7 @@ public class AlexaDAO {
     @Value("${db.password}") private String dbPassword;
 
     public AlexaDAO() {
-        this.alexaAppID = "cs32302"; //TODO set this back to what it was
+        this.alexaAppID = "cs32302  "; //TODO set this back to what it was
     }
 
     public List<String> getAnswersForIntent(String intentName) {
@@ -303,4 +303,34 @@ public class AlexaDAO {
         String url = "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName;
         return DriverManager.getConnection(url, dbUser, dbPassword);
     }
+
+    public MetricDetailList getMetricList() {
+        log.info("Getting metrics list");
+        final MetricDetailList detailList = new MetricDetailList();
+        final String sql = "SELECT eventname, count(*) AS eventcount, MAX(dtstamp) AS mostrecentdtstamp\n " +
+                "FROM axmetrics\n " +
+                "WHERE appname = ?\n " +
+                "GROUP BY eventname";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+
+            statement.setString(1, "CamronsApp"); // Replace with your app name
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    final MetricDetail metric = new MetricDetail();
+                    metric.setEventName(rs.getString("eventname"));
+                    metric.setCount(rs.getLong("eventcount"));
+                    metric.setMostRecentDate(rs.getString("mostrecentdtstamp"));
+                    detailList.getMetrics().add(metric);
+
+
+                }
+            }
+            return detailList;
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException("Failed to get metric list", e);
+        }
+    }
+
 }

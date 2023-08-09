@@ -33,7 +33,7 @@ public class AnswerGenerator {
 
         // this is disgusting
         if(answers.size() == 0){
-            throw new NoAvailableAnswerException(AlexaIntent.getIntentFromString(intentString));
+            throw new NoAvailableAnswerException(intentString);
         }
 
 

@@ -79,4 +79,9 @@ public class MainRestController {
         alexaDAO.deleteAnswer(intentID, answerID);
         return new ResponseEntity<>("deleted answer " + answerID, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/metrics", method = RequestMethod.GET)
+    public MetricDetailList getMetrics() {
+        return alexaDAO.getMetricList();
+    }
 }

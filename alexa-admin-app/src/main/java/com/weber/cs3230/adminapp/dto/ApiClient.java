@@ -65,4 +65,9 @@ public class ApiClient {
     public void deleteAnswer(long intentID, long answerID) {
         httpCommunicator.communicate("DELETE", baseUrl + "/intent/" + intentID + "/answer/" + answerID, String.class);
     }
+
+    public MetricDetailList getMetrics() {
+        return httpCommunicator.communicate("GET", baseUrl + "/metrics", MetricDetailList.class);
+    }
+
 }

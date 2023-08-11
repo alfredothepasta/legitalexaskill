@@ -45,7 +45,7 @@ public class HandlerSpeechlet implements SpeechletV2 {
                 recorder.recordMetric("NullQuestion");
                 return utils.getUnrecognizedResponse(requestEnvelope.getSession(), "Whale Facts", "You wot mate?");
             }
-            return utils.getNormalResponse(requestEnvelope.getSession(), "Whale Facts", answer.getText());
+            return utils.   getNormalResponse(requestEnvelope.getSession(), "Whale Facts", answer.getText());
         } catch(NoAvailableAnswerException e) {
             log.error("No available answer.", e);
             log.error("Intent: ", e.getIntent());
